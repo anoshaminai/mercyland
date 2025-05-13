@@ -8,15 +8,6 @@
   color: red;
 }
 
-.logo-container {
-  margin-bottom: 1.5rem;
-}
-
-.band-logo {
-  height: 100px;
-  width: auto;
-}
-
 .navigation {
   display: flex;
   gap: 2rem;
@@ -33,22 +24,4 @@
 .navigation a:hover,
 .navigation a.active {
   color: red; /*ur band's accent color */
-}
-
-@media (max-width: 768px) {
-  .header {
-    padding: 1rem;
-  }
-  
-  .band-logo {
-    height: 70px;
-  }
-  
-  .navigation {
-    gap: 1rem;
-  }
-  
-  .navigation a {
-    font-size: 1rem;
-  }
 }
