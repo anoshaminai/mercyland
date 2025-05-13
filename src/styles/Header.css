@@ -4,8 +4,8 @@
   flex-direction: column;
   align-items: center;
   padding: 2rem 1rem;
-  background-color: #1a1a1a;
-  color: white;
+  background-color: #000;
+  color: rgb(248, 7, 7);
 }
 
 .logo-container {
@@ -32,7 +32,7 @@
 
 .navigation a:hover,
 .navigation a.active {
-  color: #f8c630; /* Your band's accent color */
+  color: rgb(248, 7, 7); /*ur band's accent color */
 }
 
 @media (max-width: 768px) {

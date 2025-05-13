@@ -68,19 +68,6 @@ button:focus-visible {
   }
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #000;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #4A7F3F;
-  border-radius: 4px;
-}
 
 /* Remove default link styles */
 a {
