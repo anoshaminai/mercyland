@@ -5,7 +5,7 @@ import '../styles/Header.css';
 const Header: React.FC = () => {
   return (
     <header className="header">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-content mx-auto">
         <nav className="navigation">
           <NavLink 
             to="/" 

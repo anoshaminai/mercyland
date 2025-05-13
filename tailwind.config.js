@@ -10,6 +10,9 @@ export default {
         'mercy-red': '#FF0000',
         'mercy-green': '#4A7F3F',
       },
+      maxWidth: {
+        'content': '42rem', // This is equivalent to max-w-2xl
+      },
     },
   },
   plugins: [],
