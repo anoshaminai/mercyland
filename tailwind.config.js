@@ -9,9 +9,12 @@ export default {
       colors: {
         'mercy-red': '#FF0000',
         'mercy-green': '#4A7F3F',
+        'mercy-black': '#1a1a1a',
+        'mercy-white': '#FFFFFF',
       },
-      maxWidth: {
-        'content': '42rem', // This is equivalent to max-w-2xl
+      fontFamily: {
+        'display': ['YourDisplayFont', 'sans-serif'],
+        'body': ['YourBodyFont', 'sans-serif'],
       },
     },
   },
