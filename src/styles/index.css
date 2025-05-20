@@ -1,40 +1,33 @@
-/* @tailwind base;
-@tailwind components;
-@tailwind utilities; */
+@import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
 @import "tailwindcss";
 
-@font-face {
-  font-family: 'Medieval';
-  src: url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
+/* load custom fonts */
+/* @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap'); */
+
+/* define project fonts */
+@theme {
+  --font-primary: "Roboto Mono", "sans-serif";
+  --font-secondary: "MedievalSharp", "serif";
+  /* --font-primary--font-feature-settings: "cv02", "cv03", "cv04", "cv11"; 
+  --font-primary--font-variation-settings: "opsz" 32;  */
 }
 
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color-scheme: dark;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* define project colors */
+@theme {
+  --color-mercy-red: #FF0000;
+  --color-mercy-green: #4A7F3F;
+  --color-mercy-black: #000000;
+  --color-mercy-white: #FFFFFF; 
 }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #1a1a1b;
+  background-color: var(--color-mercy-black);
   overflow-x: hidden;
 }
-
-@theme {
-  --color-mercy-red: #FF0000;
-  --color-mercy-green: #4A7F3F;
-  --color-mercy-black: #1a1a1a;
-  --color-mercy-white: #FFFFFF; 
-}
-
-
 
 
 

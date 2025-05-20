@@ -4,8 +4,7 @@
   flex-direction: column;
   align-items: center;
   padding: 2rem 1rem;
-  background-color: #000;
-  color: red;
+  background-color: var(--color-mercy-black);
 }
 
 .navigation {
@@ -14,14 +13,16 @@
 }
 
 .navigation a {
-  color: white;
-  text-decoration: none;
-  font-size: 1.2rem;
-  font-weight: 500;
+  color: var(--color-mercy-red);
   transition: color 0.2s ease;
+  font-family: var(--font-primary);
+  /* text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: 500; USE THESE TO MAKE THE FONT BIGGER */ 
 }
 
 .navigation a:hover,
 .navigation a.active {
-  color: red; /*ur band's accent color */
+  color: var(--color-mercy-white); /*ur band's accent color */
 }
+
