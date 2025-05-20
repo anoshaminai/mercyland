@@ -15,13 +15,11 @@ const InfoPage: React.FC = () => {
                 Thank God for Mercy Land
               </p>
             </div>
-            <div className="grid grid-cols-1 gap-4 justify-items-center">
-              <img 
-                src={touchingImage}
-                alt="Band photo 1" 
-                className="w-full h-screen object-cover"
-              />
-            </div>
+            <img 
+              src={touchingImage}
+              alt="Band photo 1" 
+              className="w-full h-screen object-cover"
+            />
           </div>
         </div>
       </section>
