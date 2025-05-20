@@ -1,6 +1,5 @@
 import React from 'react';
 import Home from '../components/Home';
-import kidA from '../assets/images/Kid A cover art.jpg';
 
 const WatchPage: React.FC = () => {
   return (
