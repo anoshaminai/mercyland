@@ -16,9 +16,10 @@
 /* define project colors */
 @theme {
   --color-mercy-red: #FF0000;
-  --color-mercy-green: #4A7F3F;
+  --color-mercy-green: #16fd05;
   --color-mercy-black: #000000;
   --color-mercy-white: #FFFFFF; 
+  --color-mercy-blue: #071bf9;
 }
 
 body {
