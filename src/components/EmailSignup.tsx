@@ -14,7 +14,7 @@ const EmailSignup: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit} className="flex justify-center items-center bg-mercy-blue border border-mercy-red max-w-[500px] mx-auto">
-      <span className="text-mercy-green font-primary px-1 py-1 border-r border-mercy-red text-center min-w-[80px]">GET ACCESS:</span>
+      <span className="text-mercy-green font-primary px-1 py-1 border-r border-mercy-red text-center min-w-[120px]">GET ACCESS:</span>
       <input
         id="email"
         type="email"
