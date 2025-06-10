@@ -7,7 +7,7 @@ const WatchPage: React.FC = () => {
       <Home />
       <section className="min-h-screen bg-mercy-pink pt-8 pb-16">
         <div className="max-w-content mx-auto px-4">
-          <div className="grid grid-cols-2 gap-2 items-center justify-items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 items-center justify-items-center">
             <div className="flex flex-col gap-4 items-center">
               <div className="flex flex-col gap-4 justify-center items-center">
                 <h1 className="text-5xl text-mercy-green font-secondary text-center">Termites: A Love Story</h1> 
