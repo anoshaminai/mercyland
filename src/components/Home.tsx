@@ -12,7 +12,7 @@ const Home: React.FC = () => {
   return (
     <div className="flex flex-col">
       <main className="flex flex-col items-center pt-8 pb-8">
-        <div className="w-full max-w-content mx-auto px-4">
+        <div className="max-w-content mx-auto">
           <Logo />
           <EmailSignup />
           <div className="mt-4">
