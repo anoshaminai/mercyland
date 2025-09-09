@@ -37,6 +37,9 @@ const WatchPage: React.FC = () => {
             <h2 className="text-5xl text-mercy-green font-secondary text-center">
               Kid A
             </h2>
+            <p className="max-w-md text-left font-primary">
+              Laura Jinn discovers something new while surfing the void.
+            </p>
           </ContentColumn>
         </GridRow>
 
@@ -49,6 +52,9 @@ const WatchPage: React.FC = () => {
             <h2 className="text-5xl text-mercy-green font-secondary text-center">
               Get Lost!
             </h2>
+            <p className="max-w-md text-left font-primary">
+              Tantrum enters the chat.
+            </p>
           </ContentColumn>
         </GridRow>
       </Container>
