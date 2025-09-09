@@ -3,8 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/layout/Header';
 import InfoPage from './pages/InfoPage';
 import ListenPage from './pages/ListenPage';
-// import WatchPage from './pages/WatchPage';
-import WatchPageUnder from './pages/WatchPage_vid under';
+import WatchPage from './pages/WatchPage';
 
 const App: React.FC = () => {
   return (
@@ -14,7 +13,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<InfoPage />} />
           <Route path="/listen" element={<ListenPage />} />
-          <Route path="/watch" element={<WatchPageUnder />} />
+          <Route path="/watch" element={<WatchPage />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </div>
