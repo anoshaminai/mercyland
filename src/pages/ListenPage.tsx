@@ -1,5 +1,5 @@
 import React from 'react';
-import Home from '../components/Home';
+import Home from '../components/common/Home';
 import kidA from '../assets/images/Kid A cover art.jpg';
 
 const ListenPage: React.FC = () => {
@@ -9,7 +9,7 @@ const ListenPage: React.FC = () => {
       <section className="min-h-screen bg-mercy-pink pt-8 pb-16">
         <div className="max-w-content mx-auto px-4">
           <div className="grid grid-cols-1 gap-8 items-center justify-items-center">
-          <h2 className="text-4xl text-mercy-green font-primary text-center">Kid A</h2> 
+          <h2 className="text-4xl text-mercy-black font-primary text-center">Kid A</h2> 
             <img 
               src={kidA}
               alt="Kid A album cover" 

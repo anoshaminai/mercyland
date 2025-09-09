@@ -1,11 +1,11 @@
 import React from 'react';
-import Home from '../components/Home';
+import Home from '../components/common/Home';
 
 const WatchPage: React.FC = () => {
   return (
     <>
       <Home />
-      <section className="min-h-screen bg-mercy-pink pt-8 pb-16">
+      <section className="min-h-screen bg-mercy-olive pt-8 pb-16">
         <div className="max-w-content mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2 items-center justify-items-center">
             <div className="flex flex-col gap-4 items-center">

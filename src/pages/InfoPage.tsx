@@ -1,5 +1,5 @@
 import React from 'react';
-import Home from '../components/Home';
+import Home from '../components/common/Home';
 import touchingImage from '../assets/images/touching.jpg';
 
 const InfoPage: React.FC = () => {
