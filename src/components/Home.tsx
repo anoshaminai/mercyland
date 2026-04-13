@@ -1,14 +1,7 @@
-import React from 'react';
 import Logo from './Logo';
 import EmailSignup from './EmailSignup';
 
-declare global {
-  interface Window {
-    LayloSDK: any;
-  }
-}
-
-const Home: React.FC = () => {
+const Home = () => {
   return (
     <div className="flex flex-col">
       <main className="flex flex-col items-center pt-8 pb-8">

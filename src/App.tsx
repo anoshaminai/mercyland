@@ -1,11 +1,10 @@
-import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import InfoPage from './pages/InfoPage';
 import ListenPage from './pages/ListenPage';
 import WatchPage from './pages/WatchPage';
 
-const App: React.FC = () => {
+const App = () => {
   return (
     <BrowserRouter>
       <div className="app">

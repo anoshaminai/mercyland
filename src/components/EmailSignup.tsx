@@ -1,7 +1,6 @@
-import React from 'react';
 import { useForm, ValidationError } from '@formspree/react';
 
-const EmailSignup: React.FC = () => {
+const EmailSignup = () => {
   const [state, handleSubmit] = useForm("mldnjygq");
 
   if (state.succeeded) {

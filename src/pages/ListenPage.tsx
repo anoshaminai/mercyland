@@ -1,8 +1,7 @@
-import React from 'react';
 import Home from '../components/Home';
 import kidA from '../assets/images/Kid A cover art.jpg';
 
-const ListenPage: React.FC = () => {
+const ListenPage = () => {
   return (
     <>
       <Home />
@@ -42,20 +41,7 @@ const ListenPage: React.FC = () => {
                   <a href="https://thankgodformercyland.bandcamp.com/track/kid-a">Kid A by Mercy Land</a>
                 </iframe>
               </div>
-              {/* <div className="flex gap-8 justify-center items-center">
-                <iframe 
-                  allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
-                  style={{ 
-                    width: '350px',
-                    height: '100%',
-                    overflow: 'hidden',
-                    borderRadius: '10px'
-                  }}
-                  sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
-                  src="https://embed.music.apple.com/us/song/kid-a/1805286177"
-                />
-              </div> */}
-            </div>
+              </div>
           </div>
         </div>
       </section>
