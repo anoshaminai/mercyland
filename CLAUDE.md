@@ -26,12 +26,13 @@ The project already has a working React + TS + Vite + Tailwind v4 codebase with:
 
 ### Existing color palette (defined in `src/styles/index.css` as `@theme` values):
 ```
---color-mercy-red: #FF0000
---color-mercy-green: #16fd05
---color-mercy-black: #000000
+--color-mercy-red: #B71B02
+--color-mercy-green: #00EA2D
+--color-mercy-olive: #484B08
+--color-mercy-black: #000102
 --color-mercy-white: #FFFFFF
---color-mercy-blue: #071bf9
---color-mercy-pink: #ff00ff
+--color-mercy-blue: #062898
+--color-mercy-pink: #CE2CB8
 ```
 
 ### What does NOT exist yet:

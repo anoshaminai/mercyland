@@ -9,12 +9,12 @@ const ListenPage = () => {
         <div className="max-w-content mx-auto px-4">
           {songs.map((song) => (
             <div key={song.id} className="grid grid-cols-1 gap-8 items-center justify-items-center">
-              <h2 className="text-4xl text-mercy-green font-primary text-center">{song.title}</h2>
+              <h2 className="text-4xl text-mercy-black font-primary text-center">{song.title}</h2>
               {song.albumArt && (
                 <img
                   src={song.albumArt}
                   alt={`${song.title} album cover`}
-                  className="w-198 h-198 object-cover items-center"
+                  className="w-150 h-150 object-cover"
                 />
               )}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
