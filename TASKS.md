@@ -37,17 +37,17 @@ Check off tasks as you complete them. Commit after each phase.
 - [ ] Commit: `"cleanup: remove dead files and boilerplate"`
 
 ### 0B: Extract content into data files
-- [ ] Create `src/data/media.ts` — extract all song/album data from ListenPage into a typed array:
+- [x] Create `src/data/media.ts` — extract all song/album data from ListenPage into a typed array:
   ```ts
   type Song = { id: string; title: string; albumArt?: string; spotifyEmbed?: string; soundcloudEmbed?: string; bandcampEmbed?: string; appleMusicEmbed?: string; }
   ```
-- [ ] Create `src/data/videos.ts` — extract video data from WatchPage into a typed array:
+- [x] Create `src/data/videos.ts` — extract video data from WatchPage into a typed array:
   ```ts
   type Video = { id: string; title: string; description: string; youtubeId: string; }
   ```
-- [ ] Update ListenPage and WatchPage to render from these data files instead of hardcoded JSX
-- [ ] Verify adding a new song/video is now just adding an object to the array
-- [ ] Commit: `"extract media content into data files"`
+- [x] Update ListenPage and WatchPage to render from these data files instead of hardcoded JSX
+- [x] Verify adding a new song/video is now just adding an object to the array
+- [x] Commit: `"extract media content into data files"`
 
 ---
 

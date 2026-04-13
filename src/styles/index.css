@@ -9,12 +9,13 @@
 
 /* define project colors */
 @theme {
-  --color-mercy-red: #FF0000;
-  --color-mercy-green: #16fd05;
-  --color-mercy-black: #000000;
-  --color-mercy-white: #FFFFFF; 
-  --color-mercy-blue: #071bf9;
-  --color-mercy-pink: #ff00ff;
+  --color-mercy-red: #B71B02;
+  --color-mercy-green: #00EA2D;
+  --color-mercy-olive: #484B08;
+  --color-mercy-black: #000102;
+  --color-mercy-white: #FFFFFF;
+  --color-mercy-blue: #062898;
+  --color-mercy-pink: #CE2CB8;
 }
 
 body {

@@ -1,5 +1,5 @@
 import Home from '../components/Home';
-import kidA from '../assets/images/Kid A cover art.jpg';
+import { songs } from '../data/media';
 
 const ListenPage = () => {
   return (
@@ -7,46 +7,33 @@ const ListenPage = () => {
       <Home />
       <section className="min-h-screen bg-mercy-pink pt-8 pb-16">
         <div className="max-w-content mx-auto px-4">
-          <div className="grid grid-cols-1 gap-8 items-center justify-items-center">
-          <h2 className="text-4xl text-mercy-green font-primary text-center">Kid A</h2> 
-            <img 
-              src={kidA}
-              alt="Kid A album cover" 
-              className="w-198 h-198 object-cover items-center"
-            />
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
-              <div className="flex gap-8 justify-center items-center">
-                <iframe 
-                  src="https://open.spotify.com/embed/album/2VHtTgQDgzi3z4MewLHfSP?utm_source=generator" 
-                  width="350px" 
-                  height="352" 
-                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-                  loading="lazy"
+          {songs.map((song) => (
+            <div key={song.id} className="grid grid-cols-1 gap-8 items-center justify-items-center mb-16">
+              <h2 className="text-4xl text-mercy-black font-primary text-center">{song.title}</h2>
+              {song.albumArt && (
+                <img
+                  src={song.albumArt}
+                  alt={`${song.title} album cover`}
+                  className="w-150 h-150 object-cover"
                 />
-              </div>
-              <div className="flex gap-8 justify-center items-center">
-                <iframe 
-                  width="350px" 
-                  height="350"  
-                  allow="autoplay"
-                  src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2080693716&color=%23902722&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"
-                />
-              </div>
-              <div className="flex gap-8 justify-center items-center">
-                <iframe 
+              )}
+              {song.bandcampEmbed && (
+                <iframe
                   style={{ border: 0, width: '350px', height: '350px' }}
-                  src="https://bandcamp.com/EmbeddedPlayer/track=1301656413/size=large/bgcol=333333/linkcol=0f91ff/minimal=true/transparent=true/" 
+                  src={song.bandcampEmbed}
                   seamless
                 >
-                  <a href="https://thankgodformercyland.bandcamp.com/track/kid-a">Kid A by Mercy Land</a>
+                  <a href={`https://thankgodformercyland.bandcamp.com/track/${song.id}`}>
+                    {song.title} by Mercy Land
+                  </a>
                 </iframe>
-              </div>
-              </div>
-          </div>
+              )}
+            </div>
+          ))}
         </div>
       </section>
     </>
   );
 };
 
-export default ListenPage; 
+export default ListenPage;
