@@ -16,25 +16,25 @@ Check off tasks as you complete them. Commit after each phase.
 **Estimate**: 2-3 hours
 
 ### 0A: Cleanup
-- [ ] Delete dead files:
+- [x] Delete dead files:
   - `src/pages/WatchPage_vid under.tsx` (unused alternate layout)
   - `src/prompts/screenshot-to-code.md` (empty)
   - `src/assets/react.svg` (Vite template leftover)
   - `public/vite.svg` (Vite template favicon)
   - `tailwind.config.js` (entirely commented out, Tailwind v4 uses `@tailwindcss/vite`)
-- [ ] Clean `src/styles/App.css` — delete all Vite boilerplate rules (`#root`, `.logo`, `.card`, `.read-the-docs`, `@keyframes logo-spin`), keep only `.app`
-- [ ] Remove `declare global { interface Window { LayloSDK: any; } }` from `src/components/Home.tsx`
-- [ ] Remove or replace broken favicon link in `index.html` (points to deleted `vite.svg`)
-- [ ] Remove commented-out code:
+- [x] Clean `src/styles/App.css` — delete all Vite boilerplate rules (`#root`, `.logo`, `.card`, `.read-the-docs`, `@keyframes logo-spin`), keep only `.app`
+- [x] Remove `declare global { interface Window { LayloSDK: any; } }` from `src/components/Home.tsx`
+- [x] Remove or replace broken favicon link in `index.html` (points to deleted `vite.svg`)
+- [x] Remove commented-out code:
   - Duplicate font import in `src/styles/index.css`
   - Font feature/variation settings block in `src/styles/index.css`
   - NavLink stubs in `src/components/Header.tsx`
   - `<h2>About Us</h2>` in `src/pages/InfoPage.tsx`
   - Apple Music iframe block in `src/pages/ListenPage.tsx`
   - CSS comments in `src/styles/Header.css`
-- [ ] Remove unnecessary `import React from 'react'` in files that only use JSX (React 19 doesn't need it)
-- [ ] Run `npm run build` to confirm nothing breaks
-- [ ] Commit: `"cleanup: remove dead files and boilerplate"`
+- [x] Remove unnecessary `import React from 'react'` in files that only use JSX (React 19 doesn't need it)
+- [x] Run `npm run build` to confirm nothing breaks
+- [x] Commit: `"cleanup: remove dead files and boilerplate"`
 
 ### 0B: Extract content into data files
 - [x] Create `src/data/media.ts` — extract all song/album data from ListenPage into a typed array:
