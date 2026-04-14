@@ -8,7 +8,7 @@ export const VoidPage = () => {
   const objects = useMemo(() => generatePlaceholders(12), []);
 
   return (
-    <div className="w-screen h-screen bg-mercy-black">
+    <div className="w-screen h-screen" style={{ backgroundColor: '#1a1a2e' }}>
       <Canvas camera={{ position: [0, 0, 12], fov: 60 }}>
         <SceneControls />
         <FloatingEngine objects={objects} />

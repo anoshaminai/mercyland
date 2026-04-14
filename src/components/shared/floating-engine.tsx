@@ -19,6 +19,8 @@ const GeometryByType = {
 
 const FloatingMesh = ({ config }: { config: FloatingObjectConfig }) => {
   const meshRef = useRef<Mesh>(null!);
+  const hovered = useRef(false);
+  const hoverScale = useRef(1);
   const { camera } = useThree();
   const [ix, iy, iz] = config.position;
   const { speed, amplitude, phaseOffset } = config.drift;
@@ -35,6 +37,11 @@ const FloatingMesh = ({ config }: { config: FloatingObjectConfig }) => {
     mesh.rotation.y += config.rotationSpeed[1] * delta;
     mesh.rotation.z += config.rotationSpeed[2] * delta;
 
+    const target = hovered.current ? 1.15 : 1.0;
+    hoverScale.current = MathUtils.lerp(hoverScale.current, target, 0.1);
+    const s = config.scale * hoverScale.current;
+    mesh.scale.set(s, s, s);
+
     const dist = camera.position.distanceTo(mesh.position);
     const opacity = 1 - smoothstep(8, 30, dist);
     const mat = mesh.material as MeshStandardMaterial;
@@ -42,8 +49,8 @@ const FloatingMesh = ({ config }: { config: FloatingObjectConfig }) => {
   });
 
   return (
-    <ClickableObject>
-      <mesh ref={meshRef} scale={config.scale}>
+    <ClickableObject hovered={hovered}>
+      <mesh ref={meshRef}>
         {GeometryByType[config.geometry]}
         <meshStandardMaterial
           color={config.color}

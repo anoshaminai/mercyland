@@ -1,27 +1,12 @@
-import { useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
-import { Group } from 'three';
-import { MathUtils } from 'three';
-
 interface ClickableObjectProps {
   children: React.ReactNode;
+  hovered: React.MutableRefObject<boolean>;
   onClick?: () => void;
 }
 
-export const ClickableObject = ({ children, onClick }: ClickableObjectProps) => {
-  const groupRef = useRef<Group>(null!);
-  const hovered = useRef(false);
-  const currentScale = useRef(1);
-
-  useFrame(() => {
-    const target = hovered.current ? 1.15 : 1.0;
-    currentScale.current = MathUtils.lerp(currentScale.current, target, 0.1);
-    groupRef.current.scale.setScalar(currentScale.current);
-  });
-
+export const ClickableObject = ({ children, hovered, onClick }: ClickableObjectProps) => {
   return (
     <group
-      ref={groupRef}
       onClick={(e) => {
         e.stopPropagation();
         onClick?.();
