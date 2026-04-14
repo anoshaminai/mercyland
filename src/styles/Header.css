@@ -21,3 +21,17 @@
 .navigation a.active {
   color: var(--color-mercy-white);
 }
+
+.nav-divider {
+  color: var(--color-mercy-red);
+  opacity: 0.4;
+  user-select: none;
+}
+
+.navigation .view-toggle {
+  color: var(--color-mercy-green);
+}
+
+.navigation .view-toggle:hover {
+  color: var(--color-mercy-white);
+}
