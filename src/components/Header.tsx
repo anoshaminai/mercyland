@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom';
+import { ViewToggle } from './ViewToggle';
 import '../styles/Header.css';
 
 const Header = () => {
@@ -7,7 +8,7 @@ const Header = () => {
       <div className="max-w-content mx-auto">
         <nav className="navigation">
           <NavLink
-            to="/"
+            to="/info"
             className={({ isActive }) => isActive ? 'active' : ''}
           >
             INFO
@@ -24,6 +25,8 @@ const Header = () => {
           >
             WATCH 'TERMITES'
           </NavLink>
+          <span className="nav-divider">|</span>
+          <ViewToggle />
         </nav>
       </div>
     </header>
