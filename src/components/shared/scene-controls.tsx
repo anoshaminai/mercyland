@@ -3,8 +3,8 @@ import { OrbitControls } from '@react-three/drei';
 export const SceneControls = () => {
   return (
     <>
-      <color attach="background" args={['#6f6f7d']} />
-      <fog attach="fog" args={['#c8c8db', 10, 35]} />
+      <color attach="background" args={['#6c6c7a']} />
+      <fog attach="fog" args={['#e7e7f2', 10, 35]} />
 
       <ambientLight intensity={0.7} />
 
