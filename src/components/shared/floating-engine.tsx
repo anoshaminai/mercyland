@@ -17,7 +17,7 @@ const GeometryByType = {
   icosahedron: <icosahedronGeometry />,
 };
 
-const FloatingMesh = ({ config }: { config: FloatingObjectConfig }) => {
+const FloatingMesh = ({ config, onObjectClick }: { config: FloatingObjectConfig; onObjectClick?: (id: string) => void }) => {
   const meshRef = useRef<Mesh>(null!);
   const hovered = useRef(false);
   const hoverScale = useRef(1);
@@ -49,7 +49,7 @@ const FloatingMesh = ({ config }: { config: FloatingObjectConfig }) => {
   });
 
   return (
-    <ClickableObject hovered={hovered}>
+    <ClickableObject hovered={hovered} onClick={() => onObjectClick?.(config.id)}>
       <mesh ref={meshRef}>
         {GeometryByType[config.geometry]}
         <meshStandardMaterial
@@ -63,11 +63,11 @@ const FloatingMesh = ({ config }: { config: FloatingObjectConfig }) => {
   );
 };
 
-export const FloatingEngine = ({ objects }: { objects: FloatingObjectConfig[] }) => {
+export const FloatingEngine = ({ objects, onObjectClick }: { objects: FloatingObjectConfig[]; onObjectClick?: (id: string) => void }) => {
   return (
     <>
       {objects.map((obj) => (
-        <FloatingMesh key={obj.id} config={obj} />
+        <FloatingMesh key={obj.id} config={obj} onObjectClick={onObjectClick} />
       ))}
     </>
   );

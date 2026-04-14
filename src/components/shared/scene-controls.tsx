@@ -1,6 +1,6 @@
 import { OrbitControls } from '@react-three/drei';
 
-export const SceneControls = () => {
+export const SceneControls = ({ autoRotate = true }: { autoRotate?: boolean }) => {
   return (
     <>
       <color attach="background" args={['#6c6c7a']} />
@@ -12,7 +12,7 @@ export const SceneControls = () => {
         enableDamping
         dampingFactor={0.05}
         enablePan={false}
-        autoRotate
+        autoRotate={autoRotate}
         autoRotateSpeed={0.3}
         minDistance={3}
         maxDistance={25}

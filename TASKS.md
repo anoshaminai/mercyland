@@ -55,20 +55,20 @@ Check off tasks as you complete them. Commit after each phase.
 **Goal**: Objects float in 3D space. You can look around. Clicking does nothing yet.
 **Estimate**: 6-10 hours (mostly iteration on feel)
 
-- [ ] Install 3D deps: `@react-three/fiber`, `@react-three/drei`, `three`, `@types/three`
-- [ ] Build `src/components/shared/floating-engine.tsx` — the R3F scene that renders objects drifting in space
+- [x] Install 3D deps: `@react-three/fiber`, `@react-three/drei`, `three`, `@types/three`
+- [x] Build `src/components/shared/floating-engine.tsx` — the R3F scene that renders objects drifting in space
   - Sinusoidal drift motion with randomized offsets per object
   - Objects fade in/out based on distance from camera
   - Fog or depth-of-field to create depth
-- [ ] Build `src/components/shared/clickable-object.tsx` — wrapper with hover highlight + raycasting
-- [ ] Build `src/components/shared/scene-controls.tsx` — OrbitControls, lighting, background
-- [ ] Test with 15-20 placeholder cubes/spheres floating around
-- [ ] Get camera orbit (drag) and zoom (scroll) feeling good
-- [ ] Test on mobile — touch drag for orbit, pinch for zoom
-- [ ] **[ITERATE IN CLAUDE CODE]**: Experiment with motion feel:
+- [x] Build `src/components/shared/clickable-object.tsx` — wrapper with hover highlight + raycasting
+- [x] Build `src/components/shared/scene-controls.tsx` — OrbitControls, lighting, background
+- [x] Test with 15-20 placeholder cubes/spheres floating around
+- [x] Get camera orbit (drag) and zoom (scroll) feeling good
+- [x] Test on mobile — touch drag for orbit, pinch for zoom
+- [x] **[ITERATE IN CLAUDE CODE]**: Experiment with motion feel:
   - "The objects are moving too fast / too uniform / too predictable. Make the motion feel more [organic / dreamy / unsettling]. Add slight rotation drift."
   - Iterate until the vibe is right.
-- [ ] Commit: `"floating engine v1"`
+- [x] Commit: `"floating engine v1"`
 
 ---
 
@@ -76,24 +76,24 @@ Check off tasks as you complete them. Commit after each phase.
 **Goal**: The Void page renders real content. Clicking objects does something.
 **Estimate**: 3-4 hours
 
-- [ ] Define `VoidObject` type in `src/types/void.ts`
-- [ ] Create `src/data/void-objects.ts` — hardcoded array of void objects, pulling from existing media data. Mix of:
+- [x] Define `VoidObject` type in `src/types/void.ts`
+- [x] Create `src/data/void-objects.ts` — hardcoded array of void objects, pulling from existing media data. Mix of:
   - Band images (already have `touching.jpg`, `temp_logo.png`, `Kid A cover art.jpg`)
   - Music links (Spotify/Bandcamp/SoundCloud embeds from `src/data/media.ts`)
   - Video (YouTube embed from `src/data/videos.ts`)
   - Placeholder 3D models (simple geometries if no .glb files yet)
-- [ ] Build `src/components/void/floating-object.tsx` — renders a VoidObject as either:
+- [x] Build `src/components/void/floating-object.tsx` — renders a VoidObject as either:
   - A plane with an image texture (for 2D images)
   - A loaded .glb model (for 3D objects)
   - A stylized shape with a label (for links)
-- [ ] Build `src/components/void/object-detail.tsx` — modal/overlay when an object is clicked:
+- [x] Build `src/components/void/object-detail.tsx` — modal/overlay when an object is clicked:
   - Type "video" → embedded video player
   - Type "link" → external link
   - Type "music" → embedded Spotify/Bandcamp/SoundCloud player
   - Type "image" → full-screen image view
-- [ ] Build `src/pages/void-page.tsx` at route `/void`
-- [ ] Wire up click: object → detail overlay
-- [ ] Add at least 5 real objects with real content
+- [x] Build `src/pages/void-page.tsx` at route `/void`
+- [x] Wire up click: object → detail overlay
+- [x] Add at least 5 real objects with real content
 - [ ] Commit: `"void with static content"`
 
 ---
@@ -117,10 +117,10 @@ Check off tasks as you complete them. Commit after each phase.
   - `/` routes to whichever is the current default
   - `/void` always goes to 3D, `/flat` always goes to 2D
 - [ ] Update routing in `App.tsx`:
-  - Remove old `/listen`, `/watch` routes (content lives in flat view sections now)
+  <!-- - Remove old `/listen`, `/watch` routes (content lives in flat view sections now) -->
   - Add `/void`, `/flat` routes
   - `/` redirects based on stored preference
-- [ ] Remove old page files once flat view replaces them: `InfoPage.tsx`, `ListenPage.tsx`, `WatchPage.tsx`
+<!-- - [ ] Remove old page files once flat view replaces them: `InfoPage.tsx`, `ListenPage.tsx`, `WatchPage.tsx` -->
 - [ ] **[ITERATE IN CLAUDE CODE]**: Style the flat view:
   - "Make this flat page feel cohesive with the void aesthetic. Same colors (mercy-red, mercy-green, mercy-black, mercy-pink), same fonts (Roboto Mono, MedievalSharp), but laid out traditionally."
 - [ ] Commit: `"flat view + view toggle"`
@@ -137,6 +137,7 @@ Check off tasks as you complete them. Commit after each phase.
 - [ ] Transitions: animate between void ↔ flat view, use Framer Motion (already installed)
 - [ ] SEO / meta tags (especially for the flat view — Open Graph, Twitter card)
 - [ ] Custom band favicon
+- [ ] Update assets -- what images, songs, etc?
 - [ ] Error states: what happens if an embed fails to load?
 - [ ] Update `public/_redirects` for new routes (Netlify SPA catch-all)
 - [ ] Commit: `"polish: performance, mobile, loading states"`

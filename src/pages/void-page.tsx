@@ -1,20 +1,37 @@
-import { useMemo } from 'react';
+import { useState } from 'react';
 import { Canvas } from '@react-three/fiber';
+import { AnimatePresence } from 'framer-motion';
 import { SceneControls } from '../components/shared/scene-controls';
 import { FloatingEngine } from '../components/shared/floating-engine';
-import { generatePlaceholders } from '../data/void-placeholders';
+import { voidObjects } from '../data/void-objects';
 import { VoidNav } from '../components/VoidNav';
+import { ObjectDetail } from '../components/void/object-detail';
+import type { VoidObject } from '../types/void';
 
 export const VoidPage = () => {
-  const objects = useMemo(() => generatePlaceholders(12), []);
+  const [selected, setSelected] = useState<VoidObject | null>(null);
+
+  const handleObjectClick = (id: string) => {
+    const obj = voidObjects.find((o) => o.id === id);
+    if (obj?.content.type === 'link') {
+      window.open(obj.content.url, '_blank');
+    } else if (obj) {
+      setSelected(obj);
+    }
+  };
 
   return (
     <div className="w-screen h-screen" style={{ backgroundColor: '#1a1a2e' }}>
       <VoidNav />
       <Canvas camera={{ position: [0, 0, 12], fov: 60 }}>
-        <SceneControls />
-        <FloatingEngine objects={objects} />
+        <SceneControls autoRotate={!selected} />
+        <FloatingEngine objects={voidObjects} onObjectClick={handleObjectClick} />
       </Canvas>
+      <AnimatePresence>
+        {selected && (
+          <ObjectDetail content={selected.content} onClose={() => setSelected(null)} />
+        )}
+      </AnimatePresence>
     </div>
   );
 };
