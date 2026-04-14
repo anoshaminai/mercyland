@@ -3,13 +3,10 @@ import { OrbitControls } from '@react-three/drei';
 export const SceneControls = () => {
   return (
     <>
-      <color attach="background" args={['#1a1a2e']} />
-      <fog attach="fog" args={['#1a1a2e', 10, 35]} />
+      <color attach="background" args={['#6f6f7d']} />
+      <fog attach="fog" args={['#c8c8db', 10, 35]} />
 
-      <ambientLight intensity={0.4} />
-      <pointLight color="#CE2CB8" position={[10, 8, 10]} intensity={80} />
-      <pointLight color="#062898" position={[-10, -5, -10]} intensity={80} />
-      <pointLight color="#B71B02" position={[0, 10, -8]} intensity={80} />
+      <ambientLight intensity={0.7} />
 
       <OrbitControls
         enableDamping
