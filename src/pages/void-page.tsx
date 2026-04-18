@@ -3,6 +3,7 @@ import { Canvas } from '@react-three/fiber';
 import { AnimatePresence } from 'framer-motion';
 import { SceneControls } from '../components/shared/scene-controls';
 import { FloatingEngine } from '../components/shared/floating-engine';
+import { VoidPostFX } from '../components/shared/void-post-fx';
 import { voidObjects } from '../data/void-objects';
 import { VoidNav } from '../components/VoidNav';
 import { ObjectDetail } from '../components/void/object-detail';
@@ -26,6 +27,7 @@ export const VoidPage = () => {
       <Canvas camera={{ position: [0, 0, 12], fov: 60 }}>
         <SceneControls autoRotate={!selected} />
         <FloatingEngine objects={voidObjects} onObjectClick={handleObjectClick} />
+        <VoidPostFX />
       </Canvas>
       <AnimatePresence>
         {selected && (
