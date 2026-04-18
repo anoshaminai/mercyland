@@ -12,6 +12,36 @@ Replace the current bright, flat grey environment with the dark, glossy, slowly-
 
 ---
 
+## 1b. Progress (as of 2026-04-18)
+
+Branch: `void_visualize`.
+
+| Phase | Status | Notes |
+|---|---|---|
+| 1 — Scene fundamentals | ✅ committed (`b0c5ee7`) | |
+| 2 — Video background placeholder | ✅ committed (`35eb174`) | Loop seam still visible; acceptable for now. |
+| 2b — Procedural shader | ⏸ not started | Video placeholder still active. |
+| 3 — Bokeh particles | 🟡 written, uncommitted, **not mounted** | `bokeh-particles.tsx` exists but is not imported in `scene-controls.tsx`. To enable, render `<BokehParticles count={50} />` inside the scene. |
+| 4 — Post-processing | ✅ committed (`00806b0`) | |
+| 5 — `.obj` loading + scatter | 🟡 written, uncommitted, **wired in** | `floating-obj.tsx`, `scattered-objects.tsx`, `model-manifest.ts`, `lib/normalize-obj.ts`, `lib/rng.ts`. Manifest switched from `.obj` to `.glb` — see blocker below. |
+| 6 — Final wiring | ✅ partial | `scene-controls.tsx` mounts `ScatteredObjects`; Bokeh not mounted; `VoidPostFX` confirmed at Canvas level per Phase 4. |
+
+### Active blocker — models render monochrome grey
+
+The `.obj` source files (from Adobe Substance 3D Assets) reference sidecar `.mtl` and `.mdl` files and texture images that never made it into the VM (`mac → vm` transfer brought only the `.obj`). `obj2gltf` (used by `scripts/convert-models-to-glb.sh`) therefore produced `.glb` files with a default grey material — verified by loading them in an external viewer.
+
+We also removed a material override in `floating-obj.tsx` that was forcing every mesh to a single grey `MeshPhysicalMaterial`; the component now uses each GLB's baked material (correct direction regardless of source fix). But because the GLBs themselves carry no color, the scene still reads monochrome.
+
+**Next step when resuming:** user is collecting the full Substance 3D bundles (`.obj + .mtl + textures/`) from the Mac. Once present in `src/assets/models/`, re-run `scripts/convert-models-to-glb.sh`. If that still looks drab (expected — `.mtl` is basic Phong, not the Substance PBR lurking in `.mdl`), fall back to opening the originals in Blender and exporting `.glb` directly (preserves PBR + bakes textures into the file).
+
+### What's next, in order
+1. Unblock Phase 5: fix model color (per above).
+2. Commit Phase 3 (bokeh) + Phase 5 (models) together once Phase 5 is visually acceptable. Mount `<BokehParticles />` in `scene-controls.tsx` as part of the same commit.
+3. Phase 2b: procedural shader to replace the video placeholder.
+4. Revisit acceptance criteria in §8.
+
+---
+
 ## 2. Current State
 
 ```tsx
@@ -20,6 +50,8 @@ Replace the current bright, flat grey environment with the dark, glossy, slowly-
 <ambientLight intensity={0.7} />                       // flat fill
 <OrbitControls ... />
 ```
+
+(Snapshot from before Phase 1 — retained for historical reference. Live code reflects Phase 1+.)
 
 Every one of these lines is pulling in the opposite direction from the reference:
 
@@ -219,7 +251,7 @@ User explicitly asked for `.obj`. If `.gltf`/`.glb` is later acceptable, prefer 
 
 ## 7. Task Breakdown
 
-### Phase 1 — Replace scene fundamentals
+### Phase 1 — Replace scene fundamentals ✅
 - Remove `<fog>`.
 - Change background `<color>` to `#05080c` (this is the fallback while the shader loads).
 - Replace the single `ambientLight` with:
@@ -228,7 +260,7 @@ User explicitly asked for `.obj`. If `.gltf`/`.glb` is later acceptable, prefer 
   - one `pointLight` at `[-4, 2, -3]`, intensity 0.6, warm-tinted (`#b88968`), for rim reflections on objects
 - Add `<Environment>` from drei with `preset="night"` (quick start) or a custom HDR in `/public/env/void.hdr` when ready.
 
-### Phase 2 — Video background (placeholder)
+### Phase 2 — Video background (placeholder) ✅
 
 User has a non-loop-smooth video file available; use it as a fast placeholder so the rest of the scene can be built and tuned against something close to the target, before investing in the shader.
 
@@ -240,7 +272,7 @@ User has a non-loop-smooth video file available; use it as a fast placeholder so
 - Cover-fit the plane to the viewport (compute scale from camera FOV + distance, or use a fullscreen-triangle shader that samples with `screenUV`).
 - Accept: "it reads as the target background." Loop seam visibility is acknowledged as a known issue, resolved by Phase 2b.
 
-### Phase 2b — Procedural background shader (upgrade)
+### Phase 2b — Procedural background shader (upgrade) ⏸ not started
 
 Replaces Phase 2. Same mount pattern (screen-aligned plane, `renderOrder={-1000}`, depth disabled).
 
@@ -251,28 +283,27 @@ Replaces Phase 2. Same mount pattern (screen-aligned plane, `renderOrder={-1000}
 - Expose tunables through props so the component can be tuned without editing GLSL.
 - Behind a feature flag initially (`<VoidBackground />` vs `<VoidVideoBackground />`) so the video fallback stays available.
 
-### Phase 3 — Bokeh layer
+### Phase 3 — Bokeh layer 🟡 written, not mounted
 - New file `BokehParticles.tsx`.
 - `InstancedMesh` of ~50 planes, billboarded to camera.
 - Radial falloff texture generated once via `CanvasTexture` from a 64×64 `OffscreenCanvas`.
 - Per-instance color + size + velocity stored in attribute buffers.
 - Update positions in `useFrame`; wrap when they leave view frustum.
 
-### Phase 4 — Post-processing
+### Phase 4 — Post-processing ✅
 - Add `@react-three/postprocessing` to dependencies.
 - New file `VoidPostFX.tsx` wrapping `<EffectComposer>` with: `Bloom`, `Vignette`, `ChromaticAberration`, `Noise`.
 - Mount inside the Canvas, after all scene content.
 
-### Phase 5 — `.obj` loading + scatter
-- Install `three-stdlib` if not already present.
-- New file `FloatingObj.tsx` per API in §6.
-- New file `ScatteredObjects.tsx` per scatter helper in §6.
-- New file `modelManifest.ts` with the `import.meta.glob` pattern.
-- Centering/normalization helper in `lib/normalizeObj.ts`.
-- Seeded RNG helper in `lib/rng.ts` (mulberry32, ~8 lines).
-- Example usage in the caller: `<ScatteredObjects count={12} models={MODEL_URLS} radius={[3, 11]} seed={42} />`.
+### Phase 5 — `.obj` loading + scatter 🟡 blocked on model color
+- ✅ `floating-obj.tsx`, `scattered-objects.tsx`, `model-manifest.ts` exist.
+- ✅ `lib/normalize-obj.ts` + `lib/rng.ts` (mulberry32) exist.
+- ✅ Wired in `scene-controls.tsx` via `<ScatteredObjects count={12} models={MODEL_URLS} radius={[3, 11]} seed={42} />`.
+- ⚠ **Deviation from spec**: the pipeline now ships `.glb` (not `.obj`). `scripts/convert-models-to-glb.sh` uses `obj2gltf` to convert offline; `model-manifest.ts` globs `*.glb`; `floating-obj.tsx` uses `useGLTF` (drei) instead of `OBJLoader`. This makes §6's `.obj`-specific guidance historical.
+- ⚠ **Material override removed** from `floating-obj.tsx`. The spec in §6 step 3 called for force-replacing every mesh's material with a glossy `MeshPhysicalMaterial`. That was masking the underlying color issue — now removed; components use GLB-baked materials.
+- ❌ **Blocker**: converted `.glb` files have no color (see §1b). Resuming work means landing the texture bundles + reconverting, *not* reintroducing the material override.
 
-### Phase 6 — Wire it all together in `SceneControls.tsx`
+### Phase 6 — Wire it all together in `SceneControls.tsx` ✅ partial (bokeh not mounted; video still default)
 ```tsx
 import { MODEL_URLS } from './modelManifest';
 
