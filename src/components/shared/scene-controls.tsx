@@ -1,9 +1,15 @@
+import { Suspense } from 'react';
 import { OrbitControls, Environment } from '@react-three/drei';
+import { VoidVideoBackground } from './void-video-background';
 
 export const SceneControls = ({ autoRotate = true }: { autoRotate?: boolean }) => {
   return (
     <>
       <color attach="background" args={['#05080c']} />
+
+      <Suspense fallback={null}>
+        <VoidVideoBackground />
+      </Suspense>
 
       <ambientLight intensity={0.15} />
       <directionalLight position={[5, 8, 3]} intensity={1.2} color="#c8d8e8" />
