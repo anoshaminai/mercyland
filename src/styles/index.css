@@ -1,10 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
 @import "tailwindcss";
 
 @theme {
   --font-primary: "Roboto Mono", "sans-serif";
   --font-secondary: "MedievalSharp", "serif";
+  --font-display: "eskapade-fraktur", serif;
 }
 
 /* define project colors */
@@ -16,6 +15,10 @@
   --color-mercy-white: #FFFFFF;
   --color-mercy-blue: #062898;
   --color-mercy-pink: #CE2CB8;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
