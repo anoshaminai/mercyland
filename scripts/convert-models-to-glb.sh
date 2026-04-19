@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 # Convert all .obj files in src/assets/models/ to Draco-compressed .glb.
 #
+# Two-step pipeline: obj2gltf (OBJ→GLB) then gltf-pipeline (Draco mesh
+# compression). obj2gltf's own --draco flag silently no-ops without a
+# peer draco3d install, so we keep the two concerns separate.
+#
 # Prerequisite (one-time):  npm install -g obj2gltf
+#                           (gltf-pipeline is fetched via npx)
 #
 # Usage:                    ./scripts/convert-models-to-glb.sh
 #
@@ -26,9 +31,12 @@ fi
 
 for obj in "${objs[@]}"; do
   name="$(basename "$obj" .obj)"
+  tmp="$MODELS_DIR/$name.tmp.glb"
   out="$MODELS_DIR/$name.glb"
   echo "→ $obj → $out"
-  obj2gltf -i "$obj" -o "$out" --draco.compressMeshes
+  obj2gltf -i "$obj" -o "$tmp"
+  npx -y gltf-pipeline -i "$tmp" -o "$out" --draco.compressMeshes
+  rm "$tmp"
 done
 
 echo ""
