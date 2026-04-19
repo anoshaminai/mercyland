@@ -1,14 +1,10 @@
-import letter from '../../assets/images/swamp-placeholder.png';
 import { FlatSection } from './flat-section';
+import { PlaceholderBox } from './placeholder-box';
 
 export const LetterSection = () => (
   <FlatSection>
-    <img
-      src={letter}
-      alt="Handwritten letter to L.J."
-      loading="lazy"
-      decoding="async"
-      className="max-w-xl mx-auto w-full h-auto object-contain"
-    />
+    <div className="max-w-xl mx-auto">
+      <PlaceholderBox label="Dear L.J. letter" aspect="3 / 4" />
+    </div>
   </FlatSection>
 );

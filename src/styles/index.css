@@ -15,6 +15,12 @@
   --color-mercy-white: #FFFFFF;
   --color-mercy-blue: #062898;
   --color-mercy-pink: #CE2CB8;
+
+  --color-nav-bg: #758e91;
+  --color-nav-text: #000000;
+  --color-influences-bg: #022b01;
+  --color-influences-text: #848f56;
+  --color-termites-bg: #32262c;
 }
 
 html {

@@ -1,6 +1,6 @@
+import pressCover from '../../assets/images/band/stairs vertical 1.jpg';
 import { PRESS_ARTICLE_URL } from '../../data/links';
 import { FlatSection } from './flat-section';
-import { PlaceholderBox } from './placeholder-box';
 
 export const PressDrop = () => (
   <FlatSection>
@@ -16,7 +16,13 @@ export const PressDrop = () => (
         rel="noopener noreferrer"
         className="block hover:opacity-80 transition-opacity"
       >
-        <PlaceholderBox label="press cover" aspect="3 / 4" />
+        <img
+          src={pressCover}
+          alt="press cover"
+          loading="lazy"
+          decoding="async"
+          className="w-full aspect-[3/4] object-cover"
+        />
       </a>
     </div>
   </FlatSection>

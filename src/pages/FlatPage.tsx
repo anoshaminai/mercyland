@@ -2,6 +2,7 @@ import { IntroBio } from '../components/flat/intro-bio';
 import { BayouHero } from '../components/flat/bayou-hero';
 import { LetterSection } from '../components/flat/letter-section';
 import { InfluencesBlock } from '../components/flat/influences-block';
+import { ParkingLotWideRun } from '../components/flat/parking-lot-wide-run';
 import { LaOverlay } from '../components/flat/la-overlay';
 import { TermitesSection } from '../components/flat/termites-section';
 import { PressDrop } from '../components/flat/press-drop';
@@ -13,6 +14,7 @@ export const FlatPage = () => (
     <BayouHero />
     <LetterSection />
     <InfluencesBlock />
+    <ParkingLotWideRun />
     <LaOverlay />
     <TermitesSection />
     <PressDrop />
