@@ -1,8 +1,6 @@
 import { Suspense } from 'react';
 import { OrbitControls, Environment } from '@react-three/drei';
 import { VoidVideoBackground } from './void-video-background';
-import { ScatteredObjects } from './scattered-objects';
-import { MODEL_URLS } from './model-manifest';
 
 export const SceneControls = ({ autoRotate = true }: { autoRotate?: boolean }) => {
   return (
@@ -19,10 +17,6 @@ export const SceneControls = ({ autoRotate = true }: { autoRotate?: boolean }) =
       <pointLight position={[0, -3, 4]} intensity={0.4} color="#8faac4" />
 
       <Environment preset="studio" environmentIntensity={0.3} />
-
-      <Suspense fallback={null}>
-        <ScatteredObjects count={12} models={MODEL_URLS} radius={[3, 11]} seed={42} />
-      </Suspense>
 
       <OrbitControls
         enableDamping

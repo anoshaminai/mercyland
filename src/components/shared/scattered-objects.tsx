@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { FloatingObj } from './floating-obj';
 import { mulberry32 } from '../../lib/rng';
+import type { VoidObject } from '../../types/void';
 
 type ScatteredObjectsProps = {
   count: number;
@@ -9,6 +10,8 @@ type ScatteredObjectsProps = {
   yRange?: [number, number];
   seed?: number;
   minSpacing?: number;
+  contents?: VoidObject[];
+  onObjectClick?: (id: string) => void;
 };
 
 type Placement = {
@@ -91,6 +94,8 @@ export const ScatteredObjects = ({
   yRange = [-2, 2.5],
   seed = 42,
   minSpacing = 1.5,
+  contents,
+  onObjectClick,
 }: ScatteredObjectsProps) => {
   const placements = useMemo(
     () => generatePlacements(count, models, radius, yRange, seed, minSpacing),
@@ -101,17 +106,22 @@ export const ScatteredObjects = ({
 
   return (
     <>
-      {placements.map((p) => (
-        <FloatingObj
-          key={p.key}
-          src={p.src}
-          position={p.position}
-          scale={p.scale}
-          initialRotation={p.initialRotation}
-          float={p.float}
-          spin={p.spin}
-        />
-      ))}
+      {placements.map((p, i) => {
+        const content = contents?.[i];
+        const handleClick = content && onObjectClick ? () => onObjectClick(content.id) : undefined;
+        return (
+          <FloatingObj
+            key={p.key}
+            src={p.src}
+            position={p.position}
+            scale={p.scale}
+            initialRotation={p.initialRotation}
+            float={p.float}
+            spin={p.spin}
+            onClick={handleClick}
+          />
+        );
+      })}
     </>
   );
 };
