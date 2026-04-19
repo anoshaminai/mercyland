@@ -78,4 +78,4 @@ These assets continue to live in the void view as clickable objects.
 
 - YouTube URL for WATCH THE FILM
 - Odesli smart link for the Termites EP (generate after finalizing)
-- Article URL for press drop block
+- Article URL for press drop block 
