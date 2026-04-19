@@ -1,6 +1,8 @@
 import { Suspense } from 'react';
 import { OrbitControls, Environment } from '@react-three/drei';
 import { VoidVideoBackground } from './void-video-background';
+import { ScatteredObjects } from './scattered-objects';
+import { MODEL_URLS } from './model-manifest';
 
 export const SceneControls = ({ autoRotate = true }: { autoRotate?: boolean }) => {
   return (
@@ -11,11 +13,16 @@ export const SceneControls = ({ autoRotate = true }: { autoRotate?: boolean }) =
         <VoidVideoBackground />
       </Suspense>
 
-      <ambientLight intensity={0.15} />
-      <directionalLight position={[5, 8, 3]} intensity={1.2} color="#c8d8e8" />
-      <pointLight position={[-4, 2, -3]} intensity={1.5} color="#b88968" />
+      <ambientLight intensity={0.35} color="#d8e0ea" />
+      <directionalLight position={[5, 8, 3]} intensity={1.8} color="#ffffff" />
+      <pointLight position={[-4, 2, -3]} intensity={0.6} color="#b88968" />
+      <pointLight position={[0, -3, 4]} intensity={0.4} color="#8faac4" />
 
-      <Environment preset="night" />
+      <Environment preset="studio" environmentIntensity={0.3} />
+
+      <Suspense fallback={null}>
+        <ScatteredObjects count={12} models={MODEL_URLS} radius={[3, 11]} seed={42} />
+      </Suspense>
 
       <OrbitControls
         enableDamping
