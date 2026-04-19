@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ViewToggle } from './ViewToggle';
 import '../styles/Header.css';
 
@@ -7,24 +7,9 @@ const Header = () => {
     <header className="header">
       <div className="max-w-content mx-auto">
         <nav className="navigation">
-          <NavLink
-            to="/info"
-            className={({ isActive }) => isActive ? 'active' : ''}
-          >
-            INFO
-          </NavLink>
-          <NavLink
-            to="/listen"
-            className={({ isActive }) => isActive ? 'active' : ''}
-          >
-            LISTEN
-          </NavLink>
-          <NavLink
-            to="/watch"
-            className={({ isActive }) => isActive ? 'active' : ''}
-          >
-            WATCH 'TERMITES'
-          </NavLink>
+          <Link to="/flat#top">INFO</Link>
+          <Link to="/flat#listen">LISTEN</Link>
+          <Link to="/flat#watch">WATCH 'TERMITES'</Link>
           <span className="nav-divider">|</span>
           <ViewToggle />
         </nav>
@@ -33,4 +18,4 @@ const Header = () => {
   );
 };
 
-export default Header; 
+export default Header;
