@@ -1,12 +1,19 @@
 #!/usr/bin/env bash
-# Convert all .obj files in src/assets/models/ to Draco-compressed .glb.
+# Convert all .obj files in src/assets/models/ to compressed .glb.
 #
-# Two-step pipeline: obj2gltf (OBJ→GLB) then gltf-pipeline (Draco mesh
-# compression). obj2gltf's own --draco flag silently no-ops without a
-# peer draco3d install, so we keep the two concerns separate.
+# Four-step pipeline:
+#   1. obj2gltf           — OBJ → uncompressed GLB
+#   2. gltf-transform     — resize textures to max 2048×2048
+#   3. gltf-transform     — re-encode textures as WebP
+#   4. gltf-pipeline      — apply Draco mesh compression
+#
+# obj2gltf's own --draco flag silently no-ops without a peer draco3d
+# install, so we keep concerns separate. Resize must run before webp
+# (resize decodes source format); both must run before draco (they
+# decode mesh if Draco is already present).
 #
 # Prerequisite (one-time):  npm install -g obj2gltf
-#                           (gltf-pipeline is fetched via npx)
+#                           (gltf-transform and gltf-pipeline via npx)
 #
 # Usage:                    ./scripts/convert-models-to-glb.sh
 #
@@ -31,12 +38,16 @@ fi
 
 for obj in "${objs[@]}"; do
   name="$(basename "$obj" .obj)"
-  tmp="$MODELS_DIR/$name.tmp.glb"
+  raw="$MODELS_DIR/$name.raw.glb"
+  sized="$MODELS_DIR/$name.sized.glb"
+  webp="$MODELS_DIR/$name.webp.glb"
   out="$MODELS_DIR/$name.glb"
   echo "→ $obj → $out"
-  obj2gltf -i "$obj" -o "$tmp"
-  npx -y gltf-pipeline -i "$tmp" -o "$out" --draco.compressMeshes
-  rm "$tmp"
+  obj2gltf -i "$obj" -o "$raw"
+  npx -y @gltf-transform/cli resize "$raw" "$sized" --width 2048 --height 2048
+  npx -y @gltf-transform/cli webp "$sized" "$webp"
+  npx -y gltf-pipeline -i "$webp" -o "$out" --draco.compressMeshes
+  rm "$raw" "$sized" "$webp"
 done
 
 echo ""
