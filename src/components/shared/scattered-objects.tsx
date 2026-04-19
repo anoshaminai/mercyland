@@ -33,6 +33,12 @@ const generatePlacements = (
   const placements: Placement[] = [];
   const axes: Array<'x' | 'y' | 'z'> = ['x', 'y', 'z'];
 
+  const shuffled = [...models];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+
   for (let i = 0; i < count; i++) {
     let position: [number, number, number] | null = null;
     for (let attempt = 0; attempt < 30; attempt++) {
@@ -56,10 +62,10 @@ const generatePlacements = (
     }
     if (!position) continue;
 
-    const modelIdx = Math.floor(rng() * models.length);
+    const src = i < shuffled.length ? shuffled[i] : models[Math.floor(rng() * models.length)];
     placements.push({
       key: `obj-${i}`,
-      src: models[modelIdx],
+      src,
       position,
       scale: 0.7 + rng() * 0.7,
       initialRotation: [rng() * Math.PI * 2, rng() * Math.PI * 2, rng() * Math.PI * 2],
