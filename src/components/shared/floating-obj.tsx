@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
@@ -15,6 +15,8 @@ type FloatingObjProps = {
   onClick?: () => void;
 };
 
+const SETTLE_EPSILON = 0.001;
+
 export const FloatingObj = ({
   src,
   position = [0, 0, 0],
@@ -26,10 +28,10 @@ export const FloatingObj = ({
 }: FloatingObjProps) => {
   const { scene } = useGLTF(src);
 
-  const group = useMemo(() => {
-    const cloned = scene.clone(true);
-    normalizeObj(cloned);
-    return cloned;
+  const cloned = useMemo(() => {
+    const c = scene.clone(true);
+    normalizeObj(c);
+    return c;
   }, [scene]);
 
   const ref = useRef<THREE.Group>(null);
@@ -37,35 +39,32 @@ export const FloatingObj = ({
   const hoverScale = useRef(1);
   const baseY = position[1];
 
-  useLayoutEffect(() => {
-    if (!ref.current) return;
-    ref.current.rotation.set(...initialRotation);
-  }, [initialRotation]);
-
   useFrame((state, delta) => {
     const mesh = ref.current;
     if (!mesh) return;
     const t = state.clock.elapsedTime;
     mesh.position.y = baseY + Math.sin(t * float.speed + float.phaseOffset) * float.amplitude;
     mesh.rotation[spin.axis] += delta * spin.speed;
+
     const target = hovered.current ? 1.15 : 1.0;
-    hoverScale.current = THREE.MathUtils.lerp(hoverScale.current, target, 0.1);
-    const s = scale * hoverScale.current;
-    mesh.scale.set(s, s, s);
+    if (Math.abs(hoverScale.current - target) > SETTLE_EPSILON) {
+      hoverScale.current = THREE.MathUtils.lerp(hoverScale.current, target, 0.1);
+      const s = scale * hoverScale.current;
+      mesh.scale.set(s, s, s);
+    }
   });
 
   const body = (
-    <group ref={ref} position={position}>
-      <primitive object={group} />
+    <group ref={ref} position={position} rotation={initialRotation} scale={scale}>
+      <primitive object={cloned} />
     </group>
   );
 
-  if (onClick) {
-    return (
-      <ClickableObject hovered={hovered} onClick={onClick}>
-        {body}
-      </ClickableObject>
-    );
-  }
-  return body;
+  if (!onClick) return body;
+
+  return (
+    <ClickableObject onClick={onClick} onHoverChange={(h) => (hovered.current = h)}>
+      {body}
+    </ClickableObject>
+  );
 };

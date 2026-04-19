@@ -4,18 +4,16 @@ import { mulberry32 } from '../../lib/rng';
 import type { VoidObject } from '../../types/void';
 
 type ScatteredObjectsProps = {
-  count: number;
+  items: VoidObject[];
   models: string[];
   radius?: [number, number];
   yRange?: [number, number];
   seed?: number;
   minSpacing?: number;
-  contents?: VoidObject[];
   onObjectClick?: (id: string) => void;
 };
 
 type Placement = {
-  key: string;
   src: string;
   position: [number, number, number];
   scale: number;
@@ -67,7 +65,6 @@ const generatePlacements = (
 
     const src = i < shuffled.length ? shuffled[i] : models[Math.floor(rng() * models.length)];
     placements.push({
-      key: `obj-${i}`,
       src,
       position,
       scale: 0.7 + rng() * 0.7,
@@ -88,30 +85,31 @@ const generatePlacements = (
 };
 
 export const ScatteredObjects = ({
-  count,
+  items,
   models,
   radius = [3, 11],
   yRange = [-2, 2.5],
   seed = 42,
   minSpacing = 1.5,
-  contents,
   onObjectClick,
 }: ScatteredObjectsProps) => {
   const placements = useMemo(
-    () => generatePlacements(count, models, radius, yRange, seed, minSpacing),
-    [count, models, radius, yRange, seed, minSpacing],
+    () => generatePlacements(items.length, models, radius, yRange, seed, minSpacing),
+    [items.length, models, radius, yRange, seed, minSpacing],
   );
 
   if (models.length === 0) return null;
 
   return (
     <>
-      {placements.map((p, i) => {
-        const content = contents?.[i];
-        const handleClick = content && onObjectClick ? () => onObjectClick(content.id) : undefined;
+      {items.map((item, i) => {
+        const p = placements[i];
+        if (!p) return null;
+        const handleClick =
+          item.clickable !== false && onObjectClick ? () => onObjectClick(item.id) : undefined;
         return (
           <FloatingObj
-            key={p.key}
+            key={item.id}
             src={p.src}
             position={p.position}
             scale={p.scale}

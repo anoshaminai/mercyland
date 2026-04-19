@@ -24,10 +24,8 @@ export const ObjectDetail = ({ content, onClose }: ObjectDetailProps) => {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.25 }}
     >
-      {/* Backdrop */}
       <div className="absolute inset-0 bg-black/80" onClick={onClose} />
 
-      {/* Close button */}
       <button
         onClick={onClose}
         className="absolute top-6 right-6 z-10 text-white/70 hover:text-white text-3xl font-mono cursor-pointer"
@@ -35,7 +33,6 @@ export const ObjectDetail = ({ content, onClose }: ObjectDetailProps) => {
         ✕
       </button>
 
-      {/* Content */}
       <motion.div
         className="relative z-10 flex flex-col items-center gap-4 max-w-[90vw] max-h-[90vh]"
         initial={{ scale: 0.9, opacity: 0 }}
@@ -76,7 +73,7 @@ function VideoDetail({ content }: { content: Extract<VoidContent, { type: 'video
       <h2 className="text-white font-mono text-lg">{content.title}</h2>
       <div className="relative w-[min(56vh,90vw)] aspect-[9/16]">
         <iframe
-          src={`https://www.youtube.com/embed/${content.youtubeId}?autoplay=1`}
+          src={`https://www.youtube.com/embed/${content.youtubeId}?autoplay=1&mute=1`}
           className="absolute inset-0 w-full h-full border-0"
           allow="autoplay; encrypted-media"
           allowFullScreen
