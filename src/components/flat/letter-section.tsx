@@ -1,10 +1,13 @@
-import { FlatSection } from './flat-section';
-import { PlaceholderBox } from './placeholder-box';
+import letter from '../../assets/images/LJ letter.jpg';
 
 export const LetterSection = () => (
-  <FlatSection>
-    <div className="max-w-xl mx-auto">
-      <PlaceholderBox label="Dear L.J. letter" aspect="3 / 4" />
-    </div>
-  </FlatSection>
+  <section className="w-full bg-mercy-black">
+    <img
+      src={letter}
+      alt="Dear L.J. letter"
+      loading="lazy"
+      decoding="async"
+      className="block w-full h-auto"
+    />
+  </section>
 );
