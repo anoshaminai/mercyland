@@ -13,7 +13,7 @@ const Cover = ({ src, title }: { src: string; title: string }) => (
 );
 
 export const TermitesSection = () => (
-  <FlatSection bg="bg-termites-bg" className="py-32">
+  <FlatSection id="termites" bg="bg-termites-bg" className="py-32">
     <div className="max-w-6xl mx-auto flex flex-col gap-6 md:grid md:grid-cols-2 md:grid-rows-3 md:gap-6">
       <Cover {...termitesCovers.termites} />
 
@@ -36,7 +36,6 @@ export const TermitesSection = () => (
 
         <div className="flex flex-col sm:flex-row gap-2 md:gap-3">
           <a
-            id="listen"
             href={TERMITES_EP_URL}
             target="_blank"
             rel="noopener noreferrer"
@@ -45,7 +44,6 @@ export const TermitesSection = () => (
             LISTEN TO THE EP
           </a>
           <a
-            id="watch"
             href={TERMITES_FILM_URL}
             target="_blank"
             rel="noopener noreferrer"
