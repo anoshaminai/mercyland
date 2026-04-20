@@ -16,6 +16,11 @@ type FloatingObjProps = {
 };
 
 const SETTLE_EPSILON = 0.001;
+const FADE_DURATION = 0.6;
+
+const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+
+type FadeMaterial = THREE.Material & { transparent: boolean; opacity: number };
 
 export const FloatingObj = ({
   src,
@@ -28,20 +33,51 @@ export const FloatingObj = ({
 }: FloatingObjProps) => {
   const { scene } = useGLTF(src);
 
-  const cloned = useMemo(() => {
+  const { cloned, materials } = useMemo(() => {
     const c = scene.clone(true);
+    const mats: FadeMaterial[] = [];
+    c.traverse((child) => {
+      const mesh = child as THREE.Mesh;
+      if (!mesh.isMesh || !mesh.material) return;
+      const source = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+      const perMesh = source.map((m) => {
+        const clone = (m as THREE.Material).clone() as FadeMaterial;
+        clone.transparent = true;
+        clone.opacity = 0;
+        mats.push(clone);
+        return clone;
+      });
+      mesh.material = Array.isArray(mesh.material) ? perMesh : perMesh[0];
+    });
     normalizeObj(c);
-    return c;
+    return { cloned: c, materials: mats };
   }, [scene]);
 
   const ref = useRef<THREE.Group>(null);
   const hovered = useRef(false);
   const hoverScale = useRef(1);
+  const fadeElapsed = useRef(0);
+  const fadeDone = useRef(false);
   const baseY = position[1];
 
   useFrame((state, delta) => {
     const mesh = ref.current;
     if (!mesh) return;
+
+    if (!fadeDone.current) {
+      fadeElapsed.current += delta;
+      const progress = Math.min(fadeElapsed.current / FADE_DURATION, 1);
+      const opacity = easeOutCubic(progress);
+      for (const m of materials) m.opacity = opacity;
+      if (progress >= 1) {
+        for (const m of materials) {
+          m.opacity = 1;
+          m.transparent = false;
+        }
+        fadeDone.current = true;
+      }
+    }
+
     const t = state.clock.elapsedTime;
     mesh.position.y = baseY + Math.sin(t * float.speed + float.phaseOffset) * float.amplitude;
     mesh.rotation[spin.axis] += delta * spin.speed;

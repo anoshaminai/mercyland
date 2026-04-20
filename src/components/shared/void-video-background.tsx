@@ -3,6 +3,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { useVideoTexture } from '@react-three/drei';
 import * as THREE from 'three';
 import videoUrl from '../../assets/video/void.mp4?url';
+import { markVideoReady } from '../../lib/video-ready-store';
 
 const DISTANCE = 20;
 
@@ -21,6 +22,10 @@ export const VoidVideoBackground = () => {
   useEffect(() => {
     texture.colorSpace = THREE.SRGBColorSpace;
   }, [texture]);
+
+  useEffect(() => {
+    markVideoReady();
+  }, []);
 
   const { planeWidth, planeHeight } = useMemo(() => {
     const cam = camera as THREE.PerspectiveCamera;

@@ -1,4 +1,4 @@
-import { Suspense, useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { AnimatePresence } from 'framer-motion';
 import { SceneControls } from '../components/shared/scene-controls';
@@ -8,6 +8,7 @@ import { VoidPostFX } from '../components/shared/void-post-fx';
 import { voidObjects } from '../data/void-objects';
 import { VoidNav } from '../components/VoidNav';
 import { ObjectDetail } from '../components/void/object-detail';
+import { LoadingOverlay } from '../components/void/loading-overlay';
 import type { VoidObject } from '../types/void';
 
 export const VoidPage = () => {
@@ -36,17 +37,16 @@ export const VoidPage = () => {
       <VoidNav />
       <Canvas camera={{ position: [0, 0, 12], fov: 60 }}>
         <SceneControls autoRotate={!selected} />
-        <Suspense fallback={null}>
-          <ScatteredObjects
-            items={voidObjects}
-            models={MODEL_URLS}
-            radius={[3, 11]}
-            seed={42}
-            onObjectClick={handleObjectClick}
-          />
-        </Suspense>
+        <ScatteredObjects
+          items={voidObjects}
+          models={MODEL_URLS}
+          radius={[3, 11]}
+          seed={42}
+          onObjectClick={handleObjectClick}
+        />
         <VoidPostFX />
       </Canvas>
+      <LoadingOverlay />
       <AnimatePresence>
         {selected && (
           <ObjectDetail content={selected.content} onClose={() => setSelected(null)} />

@@ -1,98 +1,172 @@
-# Spec: Add 3D Object + Fix Route 404s on Render
+# Spec: Void View Loading Behavior
 
-## 1. Add another 3D object to the void
+## Goal
+**Option 1** (preferred): Video background appears immediately, then 3D objects pop in individually as each one finishes loading. No blank screen, no full-scene loading gate — the user sees the void backdrop right away and objects materialize into it.
 
-### Context
-The void uses `.glb` files loaded via `useGLTF` from drei. Source assets are authored in Adobe Substance 3D and ship as `.obj` + `.mtl` + `.mdl` + textures. Convert to `.glb` using the existing script (`scripts/convert-models-to-glb.sh`), which wraps `obj2gltf`.
-
-### Conversion
-
-```bash
-./scripts/convert-models-to-glb.sh <path-to-obj-directory>
-```
-
-Make sure the directory contains the full Substance bundle: the `.obj`, the sibling `.mtl`, and any referenced texture files (usually in a `textures/` subfolder). `obj2gltf` needs the `.mtl` and textures co-located to pick up materials — if they're missing, the output will be grey.
-
-### Material caveat
-
-`obj2gltf` reads vanilla `.mtl` (diffuse color, basic texture maps) but **does not understand Adobe's PBR extensions** (`Pr`, `Pm`, `adobe_*`) that live in the `.mdl` file. If the asset relies heavily on those for its look, the `.glb` will render duller/darker than the Substance preview. Options:
-
-- Accept the flatter look (acceptable for many assets — the void's lighting and post-processing compensate)
-- Strip/simplify the `.mtl` to basic diffuse + normal maps before conversion
-- If a specific asset must look exactly like its Substance preview, flag it and we'll figure out an alternative path
-
-### Steps
-
-1. Drop the Substance bundle into the staging folder expected by `scripts/convert-models-to-glb.sh` (check the script for the exact input path)
-2. Run the script
-3. Drag the output `.glb` into [gltf.report](https://gltf.report) to verify — confirm geometry, scale, and materials look acceptable
-4. Move the `.glb` to `src/assets/models/` alongside the existing models
-5. Wire it into the scatter component:
-   - Add to `MODEL_URLS`
-   - Add `useGLTF.preload('/src/assets/models/<n>.glb')`
-
-### Verification checklist
-- [ ] `.glb` renders in gltf.report with geometry and at least basic color
-- [ ] File size comparable to other models in `src/assets/models/`
-- [ ] Added to `MODEL_URLS` and the preload list
-- [ ] Appears in the void scene after dev-server restart
+Fallbacks to Option 2 or 3 only if Option 1 turns out harder than expected (it shouldn't — R3F's Suspense model is built for this).
 
 ---
 
-## 2. Fix: `/void` and `/flat` routes 404 on deployed site
+## Why Option 1 is the right default
 
-### Root cause
-The repo has `public/_redirects` with `/* /index.html 200`. **That file is Netlify syntax and Render ignores it.** Render has its own rewrite system.
+The current setup already has the ingredients:
+- `VoidVideoBackground` uses `useVideoTexture` — not gated by Suspense, ready the moment the browser can play the video
+- Each `FloatingObj` uses `useGLTF` — naturally Suspense-driven, resolves per-asset
+- There are 12 scattered objects; loading them sequentially feels organic if they fade in rather than pop
 
-Locally it works because `vite dev` handles SPA fallback automatically. On deploy, Render looks for a file at `/void`, doesn't find one, and returns 404 before React Router ever loads. Same issue on preview deployments (they use the same static-site config).
+The only reason it's *not* working this way today is the Suspense structure: if there's a single `<Suspense>` at the scene root wrapping both background and objects, the whole tree waits for the slowest object. Splitting the boundaries fixes it.
 
-The `favicon.ico:1 404` in your console is unrelated — just a missing favicon. Ignore or fix separately.
+---
 
-### Fix: add a Render rewrite rule
+## Implementation
 
-Two paths. Pick one.
+### 1. Suspense structure
 
-#### Option A — Render dashboard (fastest)
+Target shape inside the `<Canvas>`:
 
-1. Go to the Render dashboard → this static site → **Redirects/Rewrites** tab
-2. Click **Add Rule**
-3. Configure:
-   - **Source:** `/*`
-   - **Destination:** `/index.html`
-   - **Action:** **Rewrite** (not Redirect — Rewrite keeps the URL in the address bar, Redirect changes it to `/`)
-4. Save. Changes apply immediately to the live site and future previews.
+```tsx
+<Canvas>
+  {/* Background renders immediately — no Suspense */}
+  <VoidVideoBackground />
 
-#### Option B — `render.yaml` in the repo (version-controlled)
+  {/* Lights, camera controls, post-fx — all eager */}
+  <ambientLight intensity={0.35} />
+  <directionalLight ... />
+  <Environment preset="night" />
+  <OrbitControls ... />
+  <VoidPostFX />
 
-Add a file at the repo root called `render.yaml`:
-
-```yaml
-services:
-  - type: web
-    name: mercyland
-    runtime: static
-    buildCommand: npm install && npm run build
-    staticPublishPath: ./dist
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
+  {/* Each scattered object in its OWN Suspense boundary with null fallback */}
+  <ScatteredObjects count={12} models={MODEL_URLS} radius={[3, 11]} seed={42} />
+</Canvas>
 ```
 
-Adjust `name`, `buildCommand`, and `staticPublishPath` to match your current Render config if they differ. Commit and push — Render picks it up automatically on next deploy.
+And inside `ScatteredObjects`:
 
-Option B is better long-term (rewrite rule is in version control alongside the code), but Option A unblocks you in 60 seconds.
+```tsx
+{positions.map((pos, i) => (
+  <Suspense key={i} fallback={null}>
+    <FadeInFloatingObj
+      src={pickModel(i)}
+      position={pos}
+      scale={...}
+      float={...}
+      spin={...}
+    />
+  </Suspense>
+))}
+```
 
-### Cleanup: `public/_redirects`
+The `fallback={null}` is important — it means "render nothing for this one object until it's ready, but don't block siblings."
 
-After the Render rule is working, delete `public/_redirects` — it's dead weight and only adds confusion for anyone reading the repo later. (Or leave it with a comment explaining it's a Netlify artifact, if there's any chance of future migration.)
+### 2. Fade-in on appear
 
-### Verification
-1. Deploy (or wait for Render to redeploy after pushing `render.yaml`)
-2. Visit `https://<your-site>/void` directly in a fresh tab — should load the void view, not 404
-3. Refresh while on `/void` — should stay on `/void`
-4. Same for `/flat` and any other route
-5. Check a preview URL to confirm previews also work
+Without this, objects pop in abruptly, which looks worse than a loading screen. Wrap each object in a simple opacity-ramp:
 
-### Reference
-[Render docs — Static Site Redirects and Rewrites](https://render.com/docs/redirects-rewrites). Key behavior to note: *"Render does not apply redirect or rewrite rules to a path if a resource exists at that path."* Meaning your JS/CSS/image files still serve normally — the rewrite only kicks in for unknown paths.
+```tsx
+// FadeInFloatingObj.tsx — wraps FloatingObj
+function FadeInFloatingObj(props) {
+  const [opacity, setOpacity] = useState(0);
+
+  useEffect(() => {
+    // Start fade as soon as component mounts (i.e. GLB resolved)
+    const raf = requestAnimationFrame(() => setOpacity(1));
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  return (
+    <group>
+      <FloatingObj {...props} materialOpacityOverride={opacity} />
+    </group>
+  );
+}
+```
+
+In `FloatingObj`, when `materialOpacityOverride` is present and < 1, set `material.transparent = true` and `material.opacity = materialOpacityOverride` on every mesh, then `useFrame` to ease it toward 1 over ~600ms. Once it hits 1, set `transparent = false` to restore correct depth sorting.
+
+Easing curve: `easeOutCubic` feels right (fast start, soft land). Duration 500–800ms.
+
+### 3. Preload aggressively
+
+At the top of the scene file, before any component mounts:
+
+```ts
+import { useGLTF } from '@react-three/drei';
+import { MODEL_URLS } from './modelManifest';
+
+MODEL_URLS.forEach(url => useGLTF.preload(url));
+```
+
+This kicks off fetches the moment the module loads. By the time the `<Canvas>` mounts, GLBs are often already parsed and ready — objects appear in the first frame or two rather than waiting for the network.
+
+### 4. Verify video is not Suspense-gated
+
+Audit the current tree. If `VoidVideoBackground` is inside a Suspense boundary that's also wrapping objects, move it out. Video should be a sibling of Suspense boundaries, never a child of one that waits on GLBs.
+
+`useVideoTexture` doesn't throw a promise for Suspense; it resolves eagerly and returns an initially-empty texture. Safe to render immediately.
+
+---
+
+## What the user sees
+
+1. Page loads → canvas mounts → video background is visible (may take a fraction of a second for the first frame, but no black screen beyond that)
+2. Lights, controls, post-fx all active on the empty void
+3. Objects fade in one-by-one over ~1–2 seconds as their GLBs resolve (possibly imperceptibly staggered if they all cache-hit)
+4. No loading text, no spinner, no pop-in
+
+---
+
+## Acceptance criteria
+
+- [ ] On first visit (cold cache), video background appears before any 3D object
+- [ ] Objects fade in smoothly, not snap
+- [ ] Slowest object does not delay any other object's appearance
+- [ ] No visible "empty canvas" moment after video loads — controls work, lighting is correct, scene feels alive even with zero objects yet
+- [ ] On warm cache (revisit), objects appear effectively instantly (preload + fade-in still runs but feels seamless)
+- [ ] Works on mobile (Safari iOS, Chrome Android — video autoplay requires `muted + playsInline` which is already set)
+
+---
+
+## Fallback plan if Option 1 fights back
+
+### Option 2 — video + loading sign until objects ready
+
+Wrap all `<ScatteredObjects>` in a single `<Suspense>` with a fallback that renders a DOM overlay (via drei's `<Html />` or a sibling React component outside the Canvas).
+
+```tsx
+<Suspense fallback={<LoadingOverlay />}>
+  <ScatteredObjects ... />
+</Suspense>
+```
+
+`LoadingOverlay` would be a small centered text element like "loading the void..." in the same mono font as the nav. Use drei's `useProgress` hook to show a progress percentage if desired:
+
+```tsx
+const { progress } = useProgress();
+return <div>{Math.round(progress)}%</div>;
+```
+
+This is ~20 lines more code than Option 1 and gives the user explicit feedback at the cost of a brief overlay.
+
+### Option 3 — full loading screen until everything ready
+
+Wrap the entire `<Canvas>` in a loading gate:
+
+```tsx
+function VoidView() {
+  const [ready, setReady] = useState(false);
+  // ... use useProgress or a manual counter to flip ready=true
+  if (!ready) return <LoadingScreen />;
+  return <Canvas>...</Canvas>;
+}
+```
+
+Simplest to reason about, but the user stares at a loader until the slowest asset finishes. Feels less magical. Only fall back to this if Options 1 and 2 both have issues.
+
+---
+
+## Out of scope
+
+- Progress bars inside the 3D scene (e.g. a loading ring around each object). Nice-to-have, not worth the complexity now.
+- Retry logic for failed GLB loads. If a model 404s, its Suspense boundary errors — the rest of the scene keeps working, and the missing object is simply absent. Fine for now.
+- Preloading the video more aggressively (e.g. via `<link rel="preload">` in `index.html`). Consider if video first-frame takes > 300ms in practice.
