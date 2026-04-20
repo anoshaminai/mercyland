@@ -1,4 +1,4 @@
-import letter from '../../assets/images/LJ letter.jpg';
+import letter from '../../assets/images/environments/LJ letter.jpg';
 
 export const LetterSection = () => (
   <section className="w-full bg-mercy-black">

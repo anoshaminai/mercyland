@@ -1,8 +1,8 @@
-import kidA from '../assets/images/Kid A cover art.jpg';
-import getLost from '../assets/images/Get Lost cover art.jpg';
-import wtlgo from '../assets/images/wtlgo cover art.jpg';
-import rt42 from '../assets/images/Rt42 cover art.jpg';
-import termites from '../assets/images/Termites cover art.jpg';
+import kidA from '../assets/images/cover art/Kid A cover art.jpg';
+import getLost from '../assets/images/cover art/Get Lost cover art.jpg';
+import wtlgo from '../assets/images/cover art/wtlgo cover art.jpg';
+import rt42 from '../assets/images/cover art/Rt42 cover art.jpg';
+import termites from '../assets/images/cover art/Termites cover art.jpg';
 
 export type TermitesCover = {
   src: string;

@@ -31,9 +31,7 @@ export const TermitesSection = () => (
         </div>
 
         <p className="text-mercy-white/80 font-primary text-xs md:text-sm leading-relaxed">
-          {/* TODO: replace with the real Termites INFO TEXT */}
-          Termites — a short EP, a short film, and a long drive. Recorded in a parking lot
-          somewhere between the bayou and the freeway.
+          Laura Jinn spends her days tending to the Void, until one day, the Void gives her something new.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-2 md:gap-3">

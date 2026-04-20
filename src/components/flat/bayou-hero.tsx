@@ -1,10 +1,10 @@
-import bayou from '../../assets/images/swamp-placeholder.png';
+import bedroom from '../../assets/images/environments/bedroom 2.jpg';
 
 export const BayouHero = () => (
   <section className="relative w-full h-screen overflow-hidden">
     <img
-      src={bayou}
-      alt="Bayou landscape"
+      src={bedroom}
+      alt="Bedroom"
       loading="eager"
       decoding="async"
       fetchPriority="high"

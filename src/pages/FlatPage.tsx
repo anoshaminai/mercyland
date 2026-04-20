@@ -13,10 +13,10 @@ export const FlatPage = () => (
     <IntroBio />
     <BayouHero />
     <LetterSection />
-    <InfluencesBlock />
-    <ParkingLotWideRun />
-    <LaOverlay />
     <TermitesSection />
+    <LaOverlay />
+    <ParkingLotWideRun />
+    <InfluencesBlock />
     <PressDrop />
     <SocialFooter />
   </>

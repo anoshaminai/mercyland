@@ -20,9 +20,8 @@ export const InfluencesBlock = () => (
         />
       </div>
       <p className="text-influences-text font-primary text-base leading-relaxed">
-        {/* TODO: replace with the real influences paragraph */}
-        Influenced by gospel choirs, drum machines, late-night radio sermons, and the kind of
-        country music your grandmother warned you about. The duo writes the way other people pray.
+        it hit me
+        it really hurt
       </p>
     </div>
   </FlatSection>
