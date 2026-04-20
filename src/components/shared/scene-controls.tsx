@@ -16,7 +16,9 @@ export const SceneControls = ({ autoRotate = true }: { autoRotate?: boolean }) =
       <pointLight position={[-4, 2, -3]} intensity={0.6} color="#b88968" />
       <pointLight position={[0, -3, 4]} intensity={0.4} color="#8faac4" />
 
-      <Environment preset="studio" environmentIntensity={0.3} />
+      <Suspense fallback={null}>
+        <Environment preset="studio" environmentIntensity={0.3} />
+      </Suspense>
 
       <OrbitControls
         enableDamping

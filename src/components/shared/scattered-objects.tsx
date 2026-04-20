@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { Suspense, useMemo } from 'react';
 import { FloatingObj } from './floating-obj';
 import { mulberry32 } from '../../lib/rng';
 import type { VoidObject } from '../../types/void';
@@ -93,31 +93,36 @@ export const ScatteredObjects = ({
   minSpacing = 1.5,
   onObjectClick,
 }: ScatteredObjectsProps) => {
+  const count = Math.max(items.length, models.length);
+
   const placements = useMemo(
-    () => generatePlacements(items.length, models, radius, yRange, seed, minSpacing),
-    [items.length, models, radius, yRange, seed, minSpacing],
+    () => generatePlacements(count, models, radius, yRange, seed, minSpacing),
+    [count, models, radius, yRange, seed, minSpacing],
   );
 
   if (models.length === 0) return null;
 
   return (
     <>
-      {items.map((item, i) => {
-        const p = placements[i];
-        if (!p) return null;
+      {placements.map((p, i) => {
+        const item = items[i];
+        const key = item?.id ?? `deco-${i}`;
         const handleClick =
-          item.clickable !== false && onObjectClick ? () => onObjectClick(item.id) : undefined;
+          item && item.clickable !== false && onObjectClick
+            ? () => onObjectClick(item.id)
+            : undefined;
         return (
-          <FloatingObj
-            key={item.id}
-            src={p.src}
-            position={p.position}
-            scale={p.scale}
-            initialRotation={p.initialRotation}
-            float={p.float}
-            spin={p.spin}
-            onClick={handleClick}
-          />
+          <Suspense key={key} fallback={null}>
+            <FloatingObj
+              src={p.src}
+              position={p.position}
+              scale={p.scale}
+              initialRotation={p.initialRotation}
+              float={p.float}
+              spin={p.spin}
+              onClick={handleClick}
+            />
+          </Suspense>
         );
       })}
     </>
