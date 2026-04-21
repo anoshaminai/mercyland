@@ -1,5 +1,6 @@
 import { Suspense, useMemo } from 'react';
 import { FloatingObj } from './floating-obj';
+import { FloatingPlane } from './floating-plane';
 import { mulberry32 } from '../../lib/rng';
 import type { VoidObject } from '../../types/void';
 
@@ -113,15 +114,25 @@ export const ScatteredObjects = ({
             : undefined;
         return (
           <Suspense key={key} fallback={null}>
-            <FloatingObj
-              src={p.src}
-              position={p.position}
-              scale={p.scale}
-              initialRotation={p.initialRotation}
-              float={p.float}
-              spin={p.spin}
-              onClick={handleClick}
-            />
+            {item?.planeSrc ? (
+              <FloatingPlane
+                src={item.planeSrc}
+                position={p.position}
+                scale={p.scale * 1.5}
+                float={p.float}
+                onClick={handleClick}
+              />
+            ) : (
+              <FloatingObj
+                src={p.src}
+                position={p.position}
+                scale={p.scale}
+                initialRotation={p.initialRotation}
+                float={p.float}
+                spin={p.spin}
+                onClick={handleClick}
+              />
+            )}
           </Suspense>
         );
       })}

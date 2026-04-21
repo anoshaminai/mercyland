@@ -3,6 +3,7 @@ import { songs } from './media';
 import { videos } from './videos';
 
 const logoSrc = new URL('../assets/images/temp_logo.png', import.meta.url).href;
+const chatWorldLogoSrc = new URL('../assets/images/chat_world/chatworld-logo.png', import.meta.url).href;
 
 export const voidObjects: VoidObject[] = [
   {
@@ -63,6 +64,15 @@ export const voidObjects: VoidObject[] = [
       type: 'link',
       label: 'Bandcamp',
       url: 'https://mercyland.bandcamp.com',
+    },
+  },
+  {
+    id: 'chat-world-entry',
+    planeSrc: chatWorldLogoSrc,
+    content: {
+      type: 'link',
+      label: 'chat world',
+      url: '/gate',
     },
   },
 ];

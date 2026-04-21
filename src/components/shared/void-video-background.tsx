@@ -2,16 +2,16 @@ import { useEffect, useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useVideoTexture } from '@react-three/drei';
 import * as THREE from 'three';
-import videoUrl from '../../assets/video/void.mp4?url';
+import defaultVideoUrl from '../../assets/video/void.mp4?url';
 import { markVideoReady } from '../../lib/video-ready-store';
 
 const DISTANCE = 20;
 
-export const VoidVideoBackground = () => {
+export const VoidVideoBackground = ({ src = defaultVideoUrl }: { src?: string }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const { camera, size } = useThree();
 
-  const texture = useVideoTexture(videoUrl, {
+  const texture = useVideoTexture(src, {
     muted: true,
     loop: true,
     playsInline: true,

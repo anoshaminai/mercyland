@@ -1,53 +1,49 @@
 import { useState, useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { Canvas } from '@react-three/fiber';
 import { AnimatePresence } from 'framer-motion';
 import { SceneControls } from '../components/shared/scene-controls';
 import { ScatteredObjects } from '../components/shared/scattered-objects';
 import { MODEL_URLS } from '../components/shared/model-manifest';
 import { VoidPostFX } from '../components/shared/void-post-fx';
-import { voidObjects } from '../data/void-objects';
+import { chatMessages } from '../data/chat-messages';
 import { VoidNav } from '../components/VoidNav';
 import { ObjectDetail } from '../components/void/object-detail';
 import { LoadingOverlay } from '../components/void/loading-overlay';
+import { useChatWorldAccess } from '../hooks/useChatWorldAccess';
+import chatWorldBgUrl from '../assets/video/ChatWorld-Background.mp4?url';
 import type { VoidObject } from '../types/void';
 
-export const VoidPage = () => {
+export const ChatWorldPage = () => {
+  const [hasAccess] = useChatWorldAccess();
   const [selected, setSelected] = useState<VoidObject | null>(null);
-  const navigate = useNavigate();
 
-  const objectsById = useMemo(
-    () => new Map(voidObjects.map((o) => [o.id, o])),
+  const messagesById = useMemo(
+    () => new Map(chatMessages.map((m) => [m.id, m])),
     [],
   );
 
   const handleObjectClick = useCallback(
     (id: string) => {
-      const obj = objectsById.get(id);
-      if (!obj) return;
-      if (obj.content.type === 'link') {
-        if (obj.content.url.startsWith('/')) {
-          navigate(obj.content.url);
-        } else {
-          window.open(obj.content.url, '_blank');
-        }
-      } else {
-        setSelected(obj);
-      }
+      const msg = messagesById.get(id);
+      if (!msg) return;
+      setSelected(msg);
     },
-    [objectsById, navigate],
+    [messagesById],
   );
 
+  if (!hasAccess) return <Navigate to="/gate" replace />;
+
   return (
-    <div className="w-screen h-screen" style={{ backgroundColor: '#1a1a2e' }}>
+    <div className="w-screen h-screen" style={{ backgroundColor: '#2a0a1e' }}>
       <VoidNav />
       <Canvas camera={{ position: [0, 0, 12], fov: 60 }}>
-        <SceneControls autoRotate={!selected} />
+        <SceneControls autoRotate={!selected} backgroundSrc={chatWorldBgUrl} />
         <ScatteredObjects
-          items={voidObjects}
+          items={chatMessages}
           models={MODEL_URLS}
-          radius={[3, 11]}
-          seed={42}
+          radius={[3, 9]}
+          seed={77}
           onObjectClick={handleObjectClick}
         />
         <VoidPostFX />

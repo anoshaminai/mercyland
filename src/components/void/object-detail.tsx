@@ -43,6 +43,7 @@ export const ObjectDetail = ({ content, onClose }: ObjectDetailProps) => {
         {content.type === 'music' && <MusicDetail content={content} />}
         {content.type === 'video' && <VideoDetail content={content} />}
         {content.type === 'image' && <ImageDetail content={content} />}
+        {content.type === 'text' && <TextDetail content={content} />}
       </motion.div>
     </motion.div>
   );
@@ -91,5 +92,18 @@ function ImageDetail({ content }: { content: Extract<VoidContent, { type: 'image
       alt={content.alt}
       className="max-h-[80vh] max-w-[90vw] object-contain"
     />
+  );
+}
+
+function TextDetail({ content }: { content: Extract<VoidContent, { type: 'text' }> }) {
+  return (
+    <div className="max-w-[600px] w-[90vw] px-8 py-10 bg-mercy-blue/90 border border-mercy-red flex flex-col gap-4">
+      {content.title && (
+        <h2 className="text-mercy-green font-primary text-lg">{content.title}</h2>
+      )}
+      <p className="text-mercy-white font-primary text-base leading-relaxed whitespace-pre-wrap">
+        {content.body}
+      </p>
+    </div>
   );
 }
