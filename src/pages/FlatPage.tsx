@@ -6,6 +6,7 @@ import { ParkingLotWideRun } from '../components/flat/parking-lot-wide-run';
 import { LaOverlay } from '../components/flat/la-overlay';
 import { TermitesSection } from '../components/flat/termites-section';
 import { PressDrop } from '../components/flat/press-drop';
+import { EmailSignupSection } from '../components/flat/email-signup-section';
 import { SocialFooter } from '../components/flat/social-footer';
 
 export const FlatPage = () => (
@@ -18,6 +19,7 @@ export const FlatPage = () => (
     <ParkingLotWideRun />
     <InfluencesBlock />
     <PressDrop />
+    <EmailSignupSection />
     <SocialFooter />
   </>
 );
