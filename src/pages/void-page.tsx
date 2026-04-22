@@ -1,9 +1,10 @@
 import { useState, useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Canvas } from '@react-three/fiber';
 import { AnimatePresence } from 'framer-motion';
 import { SceneControls } from '../components/shared/scene-controls';
 import { ScatteredObjects } from '../components/shared/scattered-objects';
-import { MODEL_URLS } from '../components/shared/model-manifest';
+import { MODEL_URLS, MODELS_BY_NAME } from '../components/shared/model-manifest';
 import { VoidPostFX } from '../components/shared/void-post-fx';
 import { voidObjects } from '../data/void-objects';
 import { VoidNav } from '../components/VoidNav';
@@ -13,6 +14,7 @@ import type { VoidObject } from '../types/void';
 
 export const VoidPage = () => {
   const [selected, setSelected] = useState<VoidObject | null>(null);
+  const navigate = useNavigate();
 
   const objectsById = useMemo(
     () => new Map(voidObjects.map((o) => [o.id, o])),
@@ -24,12 +26,16 @@ export const VoidPage = () => {
       const obj = objectsById.get(id);
       if (!obj) return;
       if (obj.content.type === 'link') {
-        window.open(obj.content.url, '_blank');
+        if (obj.content.url.startsWith('/')) {
+          navigate(obj.content.url);
+        } else {
+          window.open(obj.content.url, '_blank');
+        }
       } else {
         setSelected(obj);
       }
     },
-    [objectsById],
+    [objectsById, navigate],
   );
 
   return (
@@ -43,6 +49,7 @@ export const VoidPage = () => {
           radius={[3, 11]}
           seed={42}
           onObjectClick={handleObjectClick}
+          resolveModel={(item) => (item.model ? MODELS_BY_NAME[item.model] : undefined)}
         />
         <VoidPostFX />
       </Canvas>
