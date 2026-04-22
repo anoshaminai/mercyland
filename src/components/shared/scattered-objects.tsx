@@ -12,6 +12,7 @@ type ScatteredObjectsProps = {
   seed?: number;
   minSpacing?: number;
   onObjectClick?: (id: string) => void;
+  resolveModel?: (item: VoidObject) => string | undefined;
 };
 
 type Placement = {
@@ -23,23 +24,47 @@ type Placement = {
   spin: { axis: 'x' | 'y' | 'z'; speed: number };
 };
 
+const resolveModelUrls = (
+  items: VoidObject[],
+  models: string[],
+  resolveModel: ((item: VoidObject) => string | undefined) | undefined,
+  count: number,
+  rng: () => number,
+): string[] => {
+  const pinned: Array<string | undefined> = items.map((item) =>
+    resolveModel ? resolveModel(item) : undefined,
+  );
+  const claimed = new Set(pinned.filter((u): u is string => !!u));
+  const pool = models.filter((m) => !claimed.has(m));
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  let poolIdx = 0;
+  const result: string[] = [];
+  for (let i = 0; i < count; i++) {
+    const pin = i < pinned.length ? pinned[i] : undefined;
+    if (pin) {
+      result.push(pin);
+    } else if (poolIdx < pool.length) {
+      result.push(pool[poolIdx++]);
+    } else if (models.length > 0) {
+      result.push(models[Math.floor(rng() * models.length)]);
+    }
+  }
+  return result;
+};
+
 const generatePlacements = (
   count: number,
-  models: string[],
+  modelUrls: string[],
   radius: [number, number],
   yRange: [number, number],
-  seed: number,
+  rng: () => number,
   minSpacing: number,
 ): Placement[] => {
-  const rng = mulberry32(seed);
   const placements: Placement[] = [];
   const axes: Array<'x' | 'y' | 'z'> = ['x', 'y', 'z'];
-
-  const shuffled = [...models];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(rng() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
 
   for (let i = 0; i < count; i++) {
     let position: [number, number, number] | null = null;
@@ -64,7 +89,8 @@ const generatePlacements = (
     }
     if (!position) continue;
 
-    const src = i < shuffled.length ? shuffled[i] : models[Math.floor(rng() * models.length)];
+    const src = modelUrls[i];
+    if (!src) continue;
     placements.push({
       src,
       position,
@@ -93,12 +119,17 @@ export const ScatteredObjects = ({
   seed = 42,
   minSpacing = 1.5,
   onObjectClick,
+  resolveModel,
 }: ScatteredObjectsProps) => {
   const count = Math.max(items.length, models.length);
 
   const placements = useMemo(
-    () => generatePlacements(count, models, radius, yRange, seed, minSpacing),
-    [count, models, radius, yRange, seed, minSpacing],
+    () => {
+      const rng = mulberry32(seed);
+      const modelUrls = resolveModelUrls(items, models, resolveModel, count, rng);
+      return generatePlacements(count, modelUrls, radius, yRange, rng, minSpacing);
+    },
+    [count, items, models, resolveModel, radius, yRange, seed, minSpacing],
   );
 
   if (models.length === 0) return null;

@@ -51,20 +51,19 @@ export const ObjectDetail = ({ content, onClose }: ObjectDetailProps) => {
 
 function MusicDetail({ content }: { content: Extract<VoidContent, { type: 'music' }> }) {
   return (
-    <>
+    <div className="flex flex-col items-stretch gap-3 w-[min(360px,90vw)]">
       <img
         src={content.albumArt}
         alt={content.title}
-        className="w-[200px] h-[200px] object-cover"
+        className="w-full aspect-square object-cover"
       />
-      <h2 className="text-white font-mono text-lg">{content.title}</h2>
       <iframe
         src={content.embedUrl}
-        className="w-[280px] h-[100px] border-0"
+        className="w-full h-[42px] border-0"
         seamless
         title={content.title}
       />
-    </>
+    </div>
   );
 }
 

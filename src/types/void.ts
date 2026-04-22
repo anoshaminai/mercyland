@@ -10,4 +10,5 @@ export interface VoidObject {
   content: VoidContent;
   clickable?: boolean;
   planeSrc?: string;
+  model?: string;
 }

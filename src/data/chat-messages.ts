@@ -7,8 +7,8 @@ export const chatMessages: VoidObject[] = [
     id: 'note-welcome',
     content: {
       type: 'text',
-      title: 'hello',
-      body: "you're in. thanks for coming. messages will appear here — new ones every so often. keep it secret, keep it safe.",
+      title: 'Hi!',
+      body: "i did it all for you <3 i wrote this song for you <3",
     },
   },
   {
@@ -16,15 +16,15 @@ export const chatMessages: VoidObject[] = [
     content: {
       type: 'image',
       src: touchingSrc,
-      alt: 'a photo for you',
+      alt: 'when it all turned blue',
     },
   },
   {
     id: 'note-video',
     content: {
       type: 'video',
-      youtubeId: 'dQw4w9WgXcQ',
-      title: 'for your ears only',
+      youtubeId: 'bbNxduOX9U4',
+      title: 'April 30',
     },
   },
 ];

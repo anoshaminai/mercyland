@@ -23,13 +23,13 @@ export const GatePage = () => {
           chat world
         </h1>
         <p className="text-mercy-white font-primary text-sm md:text-base text-center opacity-80">
-          leave your email to enter. we'll send rare things.
+          leave your email to enter
         </p>
 
         {state.succeeded ? (
           <div className="flex justify-center items-center bg-mercy-blue border border-mercy-pink max-w-[500px] w-full">
             <span className="text-mercy-pink font-primary px-4 py-2 text-center">
-              opening the door...
+              fetching your messages...
             </span>
           </div>
         ) : (

@@ -4,7 +4,7 @@ import { Canvas } from '@react-three/fiber';
 import { AnimatePresence } from 'framer-motion';
 import { SceneControls } from '../components/shared/scene-controls';
 import { ScatteredObjects } from '../components/shared/scattered-objects';
-import { MODEL_URLS } from '../components/shared/model-manifest';
+import { MODEL_URLS, MODELS_BY_NAME } from '../components/shared/model-manifest';
 import { VoidPostFX } from '../components/shared/void-post-fx';
 import { voidObjects } from '../data/void-objects';
 import { VoidNav } from '../components/VoidNav';
@@ -49,6 +49,7 @@ export const VoidPage = () => {
           radius={[3, 11]}
           seed={42}
           onObjectClick={handleObjectClick}
+          resolveModel={(item) => (item.model ? MODELS_BY_NAME[item.model] : undefined)}
         />
         <VoidPostFX />
       </Canvas>
