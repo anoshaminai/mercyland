@@ -1,3 +1,3 @@
 - make the void overlays prettier - add lyrics to music, add notes to videos
 - add spcial photos to chat world
-- 
+- make video in chat world able to show horizontal video
