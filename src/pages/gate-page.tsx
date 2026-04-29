@@ -6,20 +6,24 @@ import { validateEmail } from '../lib/validate-email';
 
 export const GatePage = () => {
   const navigate = useNavigate();
-  const [, grantAccess] = useChatWorldAccess();
+  const { hasAccess, rememberedEmail, grantAccess } = useChatWorldAccess();
   const [state, handleSubmit] = useForm('mldnjygq');
   const inputRef = useRef<HTMLInputElement>(null);
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(rememberedEmail ?? '');
   const [error, setError] = useState<string | null>(null);
   const [suggestion, setSuggestion] = useState<string | null>(null);
 
   useEffect(() => {
+    if (hasAccess) navigate('/chat-world', { replace: true });
+  }, [hasAccess, navigate]);
+
+  useEffect(() => {
     if (state.succeeded) {
-      grantAccess();
+      grantAccess(email);
       const t = window.setTimeout(() => navigate('/chat-world'), 800);
       return () => window.clearTimeout(t);
     }
-  }, [state.succeeded, grantAccess, navigate]);
+  }, [state.succeeded, grantAccess, navigate, email]);
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     const result = validateEmail(email);

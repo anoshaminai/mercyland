@@ -18,7 +18,7 @@ import type { VoidObject } from '../types/void';
 const CHAT_WORLD_MODELS = [cardboardBoxUrl];
 
 export const ChatWorldPage = () => {
-  const [hasAccess] = useChatWorldAccess();
+  const { hasAccess } = useChatWorldAccess();
   const [selected, setSelected] = useState<VoidObject | null>(null);
 
   const messagesById = useMemo(
