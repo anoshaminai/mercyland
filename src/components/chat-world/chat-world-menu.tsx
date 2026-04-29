@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import menuSrc from '../../assets/images/chat_world/chatworld-menu.png';
+import { TERMITES_FILM_URL } from '../../data/links';
 
 type Hotspot = {
   label: string;
@@ -22,13 +23,13 @@ export const ChatWorldMenu = () => {
       label: 'explore',
       topPct: 37,
       heightPct: 21,
-      onClick: () => {},
+      onClick: () => navigate('/explore'),
     },
     {
       label: 'learn more',
       topPct: 58,
       heightPct: 27,
-      onClick: () => {},
+      onClick: () => window.open(TERMITES_FILM_URL, '_blank', 'noopener,noreferrer'),
     },
   ];
 

@@ -1,4 +1,5 @@
 import portrait from '../../assets/images/band/parking lot touching.jpg';
+import itHitMe from '../../assets/images/environments/it hit me.png';
 import { FlatSection } from './flat-section';
 
 const portraitBorderStyle = {
@@ -19,10 +20,13 @@ export const InfluencesBlock = () => (
           style={portraitBorderStyle}
         />
       </div>
-      <p className="text-influences-text font-primary text-base leading-relaxed">
-        it hit me
-        it really hurt
-      </p>
+      <img
+        src={itHitMe}
+        alt="it hit me"
+        loading="lazy"
+        decoding="async"
+        className="w-full h-auto object-contain"
+      />
     </div>
   </FlatSection>
 );

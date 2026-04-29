@@ -4,6 +4,7 @@ import { VoidPage } from './pages/void-page';
 import { FlatPage } from './pages/FlatPage';
 import { GatePage } from './pages/gate-page';
 import { ChatWorldPage } from './pages/chat-world-page';
+import { ExplorePage } from './pages/explore-page';
 import { HomeRedirect } from './components/HomeRedirect';
 import { ScrollToHash } from './components/ScrollToHash';
 
@@ -22,6 +23,7 @@ const App = () => {
         <Route path="/void" element={<VoidPage />} />
         <Route path="/gate" element={<GatePage />} />
         <Route path="/chat-world" element={<ChatWorldPage />} />
+        <Route path="/explore" element={<ExplorePage />} />
         <Route element={<StandardLayout />}>
           <Route path="/" element={<HomeRedirect />} />
           <Route path="/flat" element={<FlatPage />} />

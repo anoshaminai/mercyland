@@ -1,4 +1,3 @@
-import { IntroBio } from '../components/flat/intro-bio';
 import { BayouHero } from '../components/flat/bayou-hero';
 import { LetterSection } from '../components/flat/letter-section';
 import { InfluencesBlock } from '../components/flat/influences-block';
@@ -11,7 +10,6 @@ import { SocialFooter } from '../components/flat/social-footer';
 
 export const FlatPage = () => (
   <>
-    <IntroBio />
     <BayouHero />
     <LetterSection />
     <TermitesSection />
