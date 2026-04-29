@@ -12,7 +12,9 @@ const stairsSrc = new URL('../assets/images/band/stairs vertical 1.jpg', import.
 
 // `model` pins a specific .glb (bare filename, no extension) to this object.
 // Objects without `model` get any leftover .glb shuffled in from the pool.
-export const voidObjects: VoidObject[] = [
+const CHAT_WORLD_ENABLED = import.meta.env.VITE_CHAT_WORLD_ENABLED !== 'false';
+
+const allVoidObjects: VoidObject[] = [
   {
     id: 'kid-a',
     content: {
@@ -153,3 +155,8 @@ export const voidObjects: VoidObject[] = [
     },
   },
 ];
+
+export const voidObjects: VoidObject[] = CHAT_WORLD_ENABLED
+  ? allVoidObjects
+  : allVoidObjects.filter((o) => o.id !== 'chat-world-entry');
+

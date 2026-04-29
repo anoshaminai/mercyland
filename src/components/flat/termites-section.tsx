@@ -18,17 +18,16 @@ export const TermitesSection = () => (
       <Cover {...termitesCovers.termites} />
 
       <div className="relative md:aspect-square flex flex-col justify-between p-4 md:p-6">
-        <div className="relative flex items-center">
-          <span
-            aria-hidden
-            className="absolute inset-x-0 font-display text-mercy-white/10 text-[22vw] md:text-[13vw] leading-none select-none pointer-events-none"
-          >
-            2025
-          </span>
-          <h2 className="relative font-display text-mercy-red text-[14vw] md:text-[8vw] leading-none">
-            Termites
-          </h2>
-        </div>
+        <h2 className="font-display text-mercy-red text-[14vw] md:text-[8vw] leading-none">
+          Termites
+        </h2>
+
+        <span
+          aria-hidden
+          className="self-center font-display text-mercy-white/10 text-[22vw] md:text-[13vw] leading-none select-none pointer-events-none"
+        >
+          2025
+        </span>
 
         <p className="text-mercy-white/80 font-primary text-xs md:text-sm leading-relaxed">
           Laura Jinn spends her days tending to the Void, until one day, the Void gives her something new.
