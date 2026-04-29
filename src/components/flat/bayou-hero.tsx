@@ -1,19 +1,14 @@
-import bedroom from '../../assets/images/environments/bedroom 2.jpg';
+import header from '../../assets/images/environments/header_bedroom.jpg';
 
 export const BayouHero = () => (
-  <section className="relative w-full h-screen overflow-hidden">
+  <section className="relative w-full h-[calc(100vh-var(--header-h))] overflow-hidden">
     <img
-      src={bedroom}
-      alt="Bedroom"
+      src={header}
+      alt="Mercy Land"
       loading="eager"
       decoding="async"
       fetchPriority="high"
-      className="absolute inset-0 w-full h-full object-cover"
+      className="absolute inset-0 w-full h-full object-cover object-top"
     />
-    <div className="absolute inset-0 flex items-center justify-center">
-      <h1 className="font-display text-mercy-red text-[18vw] leading-none drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)]">
-        Mercy Land
-      </h1>
-    </div>
   </section>
 );

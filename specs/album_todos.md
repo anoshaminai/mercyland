@@ -1,0 +1,5 @@
+- color changes -- need Virginia input
+- enable chat world
+- improve email validation?
+- add letter graphics to chat world instead of box 
+- clouds sequence design + implement 
