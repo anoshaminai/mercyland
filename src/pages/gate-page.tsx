@@ -1,21 +1,19 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm, ValidationError } from '@formspree/react';
 import { useChatWorldAccess } from '../hooks/useChatWorldAccess';
-import { validateEmail } from '../lib/validate-email';
+import { useEmailField } from '../hooks/useEmailField';
 
 export const GatePage = () => {
   const navigate = useNavigate();
   const { hasAccess, rememberedEmail, grantAccess } = useChatWorldAccess();
   const [state, handleSubmit] = useForm('mldnjygq');
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [email, setEmail] = useState(rememberedEmail ?? '');
-  const [error, setError] = useState<string | null>(null);
-  const [suggestion, setSuggestion] = useState<string | null>(null);
+  const { email, error, suggestion, inputRef, onChange, onSubmit, applySuggestion } =
+    useEmailField(rememberedEmail ?? '', handleSubmit);
 
   useEffect(() => {
-    if (hasAccess) navigate('/chat-world', { replace: true });
-  }, [hasAccess, navigate]);
+    if (hasAccess && !state.succeeded) navigate('/chat-world', { replace: true });
+  }, [hasAccess, state.succeeded, navigate]);
 
   useEffect(() => {
     if (state.succeeded) {
@@ -24,27 +22,6 @@ export const GatePage = () => {
       return () => window.clearTimeout(t);
     }
   }, [state.succeeded, grantAccess, navigate, email]);
-
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    const result = validateEmail(email);
-    if (!result.ok) {
-      e.preventDefault();
-      setError(result.reason);
-      setSuggestion(result.suggestion ?? null);
-      return;
-    }
-    setError(null);
-    setSuggestion(null);
-    handleSubmit(e);
-  };
-
-  const applySuggestion = () => {
-    if (!suggestion) return;
-    setEmail(suggestion);
-    setError(null);
-    setSuggestion(null);
-    inputRef.current?.focus();
-  };
 
   return (
     <div className="w-screen h-screen bg-mercy-black flex items-center justify-center px-4">
@@ -75,11 +52,7 @@ export const GatePage = () => {
                 name="email"
                 required
                 value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  if (error) setError(null);
-                  if (suggestion) setSuggestion(null);
-                }}
+                onChange={onChange}
                 placeholder="YOUR EMAIL"
                 className="bg-mercy-blue text-mercy-white font-primary px-3 py-2 outline-none border-r border-mercy-pink flex-1 min-w-0"
               />

@@ -1,4 +1,4 @@
-// TODO: replace these placeholder URLs with the real ones
+// TODO: TERMITES_EP_URL is still a placeholder.
 
 export const TERMITES_EP_URL = '#';
 export const TERMITES_FILM_URL = 'https://www.youtube.com/watch?v=SINykiniIZg';

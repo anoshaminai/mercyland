@@ -11,7 +11,7 @@ const readEmail = () => {
   }
 };
 
-const readHasAccess = () => {
+const initHasAccess = () => {
   try {
     if (localStorage.getItem(ACCESS_KEY) === 'true') return true;
     if (localStorage.getItem(EMAIL_KEY)) {
@@ -29,7 +29,7 @@ export const useChatWorldAccess = (): {
   rememberedEmail: string | null;
   grantAccess: (email?: string) => void;
 } => {
-  const [hasAccess, setHasAccess] = useState<boolean>(readHasAccess);
+  const [hasAccess, setHasAccess] = useState<boolean>(initHasAccess);
   const [rememberedEmail, setRememberedEmail] = useState<string | null>(readEmail);
 
   const grantAccess = (email?: string) => {

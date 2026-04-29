@@ -10,7 +10,6 @@ export const ExplorePage = () => {
           explore
         </h1>
         <p className="text-mercy-white font-primary text-sm md:text-base text-center opacity-80 leading-relaxed">
-          {/* TODO: replace placeholder copy — user is filling in something fun */}
           something fun goes here.
         </p>
         <button

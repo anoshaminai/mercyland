@@ -1,13 +1,10 @@
-import { useRef, useState } from 'react';
 import { useForm, ValidationError } from '@formspree/react';
-import { validateEmail } from '../lib/validate-email';
+import { useEmailField } from '../hooks/useEmailField';
 
 const EmailSignup = () => {
   const [state, handleSubmit] = useForm("mldnjygq");
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [email, setEmail] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [suggestion, setSuggestion] = useState<string | null>(null);
+  const { email, error, suggestion, inputRef, onChange, onSubmit, applySuggestion } =
+    useEmailField('', handleSubmit);
 
   if (state.succeeded) {
     return (
@@ -16,27 +13,6 @@ const EmailSignup = () => {
       </div>
     );
   }
-
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    const result = validateEmail(email);
-    if (!result.ok) {
-      e.preventDefault();
-      setError(result.reason);
-      setSuggestion(result.suggestion ?? null);
-      return;
-    }
-    setError(null);
-    setSuggestion(null);
-    handleSubmit(e);
-  };
-
-  const applySuggestion = () => {
-    if (!suggestion) return;
-    setEmail(suggestion);
-    setError(null);
-    setSuggestion(null);
-    inputRef.current?.focus();
-  };
 
   return (
     <div className="flex flex-col items-center gap-2 max-w-[500px] mx-auto">
@@ -48,11 +24,7 @@ const EmailSignup = () => {
           type="email"
           name="email"
           value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-            if (error) setError(null);
-            if (suggestion) setSuggestion(null);
-          }}
+          onChange={onChange}
           className="bg-mercy-blue text-mercy-white font-primary px-1 py-1 outline-none border-r border-mercy-red w-80"
           placeholder="YOUR EMAIL"
         />
