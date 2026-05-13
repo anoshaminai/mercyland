@@ -1,0 +1,4 @@
+- I want to add a "Merch" link from the nav bar that links to https://thankgodformercyland.bandcamp.com/merch
+- I want to add a link to the "Termites" section to this merch as well https://thankgodformercyland.bandcamp.com/merch - similar to the "listen to the EP / watch the film" links
+- I want an additional link at the very bottom (next to spotify / instagram / tiktok) for merch - https://thankgodformercyland.bandcamp.com/merch
+- And then I want to add a link to the void that goes to https://thankgodformercyland.bandcamp.com/merch - I want this to always be a specific object

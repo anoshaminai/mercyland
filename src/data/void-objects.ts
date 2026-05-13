@@ -1,4 +1,5 @@
 import type { VoidObject } from '../types/void';
+import { MERCH_URL } from './links';
 
 const termitesArt = new URL('../assets/images/cover art/Termites cover art.jpg', import.meta.url).href;
 const kidAArt = new URL('../assets/images/cover art/Kid A cover art.jpg', import.meta.url).href;
@@ -153,6 +154,15 @@ const allVoidObjects: VoidObject[] = [
       label: 'chat world',
       url: '/gate',
     },
+  },
+  {
+    id: 'merch',
+    content: {
+      type: 'link',
+      label: 'Merch',
+      url: MERCH_URL,
+    },
+    model: 'cardboardBox',
   },
 ];
 
