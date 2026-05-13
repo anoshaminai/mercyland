@@ -56,7 +56,7 @@ export const TermitesSection = () => (
             rel="noopener noreferrer"
             className="flex-1 flex items-center justify-center border-2 border-mercy-pink text-mercy-pink font-primary text-xs md:text-sm tracking-widest px-3 py-2 text-center hover:bg-mercy-pink hover:text-mercy-black transition-colors"
           >
-            MERCH
+            BUY MERCH
           </a>
         </div>
       </div>
