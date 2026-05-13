@@ -1,4 +1,4 @@
-import { TERMITES_EP_URL, TERMITES_FILM_URL } from '../../data/links';
+import { MERCH_URL, TERMITES_EP_URL, TERMITES_FILM_URL } from '../../data/links';
 import { termitesCovers } from '../../data/termites';
 import { FlatSection } from './flat-section';
 
@@ -38,7 +38,7 @@ export const TermitesSection = () => (
             href={TERMITES_EP_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 border-2 border-mercy-red text-mercy-red font-primary text-xs md:text-sm tracking-widest px-3 py-2 text-center hover:bg-mercy-red hover:text-mercy-black transition-colors"
+            className="flex-1 flex items-center justify-center border-2 border-mercy-red text-mercy-red font-primary text-xs md:text-sm tracking-widest px-3 py-2 text-center hover:bg-mercy-red hover:text-mercy-black transition-colors"
           >
             LISTEN TO THE EP
           </a>
@@ -46,9 +46,17 @@ export const TermitesSection = () => (
             href={TERMITES_FILM_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 border-2 border-mercy-green text-mercy-green font-primary text-xs md:text-sm tracking-widest px-3 py-2 text-center hover:bg-mercy-green hover:text-mercy-black transition-colors"
+            className="flex-1 flex items-center justify-center border-2 border-mercy-green text-mercy-green font-primary text-xs md:text-sm tracking-widest px-3 py-2 text-center hover:bg-mercy-green hover:text-mercy-black transition-colors"
           >
             WATCH THE FILM
+          </a>
+          <a
+            href={MERCH_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 flex items-center justify-center border-2 border-mercy-pink text-mercy-pink font-primary text-xs md:text-sm tracking-widest px-3 py-2 text-center hover:bg-mercy-pink hover:text-mercy-black transition-colors"
+          >
+            MERCH
           </a>
         </div>
       </div>
