@@ -6,7 +6,6 @@ import { GatePage } from './pages/gate-page';
 import { ChatWorldPage } from './pages/chat-world-page';
 import { ExplorePage } from './pages/explore-page';
 import { WorldPage } from './pages/world-page';
-import { HomeRedirect } from './components/HomeRedirect';
 import { ScrollToHash } from './components/ScrollToHash';
 
 // One app-level layout: the shared Header (a fixed overlay) renders once, above every route
@@ -25,8 +24,8 @@ const App = () => {
       <ScrollToHash />
       <Routes>
         <Route element={<Layout />}>
-          <Route path="/" element={<HomeRedirect />} />
-          <Route path="/world" element={<WorldPage />} />
+          {/* The world root IS the House World now (v2-site.md). The wordmark returns here. */}
+          <Route path="/" element={<WorldPage />} />
           <Route path="/flat" element={<FlatPage />} />
           <Route path="/void" element={<VoidPage />} />
           <Route path="/gate" element={<GatePage />} />

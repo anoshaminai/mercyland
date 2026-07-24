@@ -1,8 +1,8 @@
-// Mercy Land — House World: verification host for the generic Scene/Hotspot components.
+// Mercy Land — House World: the world root (`/`). The navigable landing (v2-site.md).
 // Owns scene state, the history stack, and the two universal returns, and delegates each hotspot
-// target to a handler. `overlay` targets now render the real OverlayShell + content registry
-// (spec §4). Scene panels are still a stub here — the ScenePanel host is the next step. Wiring
-// the world root `/` to this is also still pending.
+// target: travel (in-world), enter (route out to an experience), overlay (OverlayShell + registry),
+// external (handled inside Hotspot). Persistent scene content renders via ScenePanel. Scenes are
+// local state under one route; `enter` targets are the real cross-experience routes.
 
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';

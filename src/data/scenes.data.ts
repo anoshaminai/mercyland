@@ -140,7 +140,7 @@ const scenes: Record<SceneId, Scene> = {
     maxVisibleLabels: 4,
     hotspots: [
       { id: 'chat', label: 'open chat world', anchor: { x: 0.5, y: 0.5 }, priority: 1,
-        target: { type: 'enter', route: '/chat' } },
+        target: { type: 'enter', route: '/chat-world' } },
       { id: 'void', label: 'look at void instead', anchor: { x: 0.78, y: 0.55 }, priority: 2,
         target: { type: 'enter', route: '/void' } },
       { id: 'imgood', label: 'im good', anchor: { x: 0.5, y: 0.85 }, priority: 3,

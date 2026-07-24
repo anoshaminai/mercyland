@@ -15,10 +15,6 @@ type NavItem =
 
 // Locked structure; some targets are still open decisions (nav_header.md §Open decisions).
 const navItems: NavItem[] = [
-  // Explicit return into the House World. Interim: the wordmark is spec'd as the return-to-world,
-  // but the world root `/` still renders the old landing — until `/` becomes the House World,
-  // this tab is the reliable way in. Remove it once the wordmark covers it.
-  { label: 'world', kind: 'internal', route: '/world' },
   { label: 'info', kind: 'internal', route: '/flat' },
   // TODO(nav_header.md #1): dedicated /listen page or a single external streaming link.
   // For now it points at the flat view's listen section (no /listen route exists yet).
