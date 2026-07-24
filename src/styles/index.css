@@ -29,6 +29,57 @@ html {
 
 :root {
   --header-h: 3rem;
+
+  /* ── House World design tokens (spec v4 §6) ──────────────────────────────
+     Placeholder defaults. The designer overrides *values only*; component code
+     reads these vars and never changes for styling. */
+
+  /* Hotspot */
+  --hotspot-scrim: rgba(13, 11, 18, 0.64);   /* idle scrim behind label — legibility guarantee */
+  --hotspot-scrim-blur: 2px;
+  --hotspot-radius: 6px;
+  --hotspot-label-font: var(--font-primary);
+  --hotspot-label-size: 12px;
+  --hotspot-label-tracking: 1px;
+  --hotspot-label-color: var(--color-mercy-white);
+  --hotspot-hover-bg: var(--color-mercy-pink); /* hover panel accent */
+  --hotspot-hover-color: var(--color-mercy-black);
+  --hotspot-hover-lift: 2px;
+  --hotspot-external-cue-color: var(--color-mercy-white);
+  --hotspot-tap-min: 44px;                   /* do not lower */
+
+  /* Edge indicator (mobile off-viewport affordance) */
+  --edge-indicator-radius: 9px;
+  --edge-indicator-bg: rgba(13, 11, 18, 0.72);
+  --edge-indicator-size: 10px;
+
+  /* Intra-scene panning (distinct from scene→scene transitions) */
+  --pan-duration: 420ms;
+  --pan-ease: cubic-bezier(0.22, 1, 0.36, 1); /* easeOutCubic */
+
+  /* Frame chrome */
+  --frame-color: #5b9bd5;
+  --frame-width: 3px;                        /* thins on mobile */
+  --frame-width-mobile: 2px;
+  --frame-corner-size: 14px;                 /* corner-dot treatment */
+
+  /* Scene title (the `well` blackletter) */
+  --scene-title-font: var(--font-display);
+  --scene-title-color: var(--color-mercy-white);
+  --scene-title-scrim: linear-gradient(180deg, rgba(13, 11, 18, 0.7) 0%, rgba(13, 11, 18, 0) 100%);
+
+  /* Scene→scene transition */
+  --nav-transition-dur: 320ms;
+  --nav-transition-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Universal returns (back / start) — inherit hotspot label look unless overridden */
+  --nav-return-bg: var(--hotspot-scrim);
+  --nav-return-color: var(--hotspot-label-color);
+  --nav-return-radius: var(--hotspot-radius);
+
+  /* Scene panel (persistent in-scene content host) */
+  --scene-panel-bg: var(--hotspot-scrim);
+  --scene-panel-radius: 10px;
 }
 
 body {
