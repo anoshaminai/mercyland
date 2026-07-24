@@ -80,6 +80,20 @@ html {
   /* Scene panel (persistent in-scene content host) */
   --scene-panel-bg: var(--hotspot-scrim);
   --scene-panel-radius: 10px;
+
+  /* ── Shared header (nav_header.md §Design tokens) ─────────────────────────
+     One header, identical on every route, mounted app-level as a fixed overlay.
+     Immersive skin is designer-fill; structure + behavior are locked. */
+  --header-height: 56px;
+  --header-bg: rgba(13, 11, 18, 0.55);        /* scrim over scenes; set transparent for full immersion */
+  --header-blur: 8px;
+  --header-item-font: var(--font-primary);
+  --header-item-size: 13px;
+  --header-item-color: var(--color-mercy-white);
+  --header-item-active: var(--color-mercy-red);
+  --header-wordmark-font: var(--font-display); /* Eskapade Fraktur → MedievalSharp fallback */
+  --header-wordmark-color: var(--color-mercy-white);
+  --header-menu-surface: rgba(13, 11, 18, 0.92);
 }
 
 body {

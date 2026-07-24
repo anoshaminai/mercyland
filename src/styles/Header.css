@@ -1,40 +1,95 @@
+/* Mercy Land — shared Header styles (nav_header.md).
+   Fixed overlay bar, identical on every route. All values are tokens (index.css §Design tokens);
+   the designer overrides tokens, never this file. */
+
 .header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  box-sizing: border-box;
+  height: var(--header-height);
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0 1rem;
+  background: var(--header-bg);
+  -webkit-backdrop-filter: blur(var(--header-blur));
+  backdrop-filter: blur(var(--header-blur));
+}
+
+.header__wordmark {
+  font-family: var(--header-wordmark-font);
+  color: var(--header-wordmark-color);
+  font-size: 1.35rem;
+  line-height: 1;
+  text-decoration: none;
+  margin-right: auto; /* pushes the utility items to the right */
+  white-space: nowrap;
+}
+
+.header__items {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+}
+
+.header__item {
+  font-family: var(--header-item-font);
+  font-size: var(--header-item-size);
+  color: var(--header-item-color);
+  text-decoration: none;
+  text-transform: lowercase;
+  letter-spacing: 0.5px;
+  transition: color 0.2s ease;
+}
+.header__item:hover,
+.header__item:focus-visible {
+  color: var(--header-item-active);
+  outline: none;
+}
+.header__item--active {
+  color: var(--header-item-active);
+}
+
+/* Mobile toggle — hidden on desktop, revealed below the breakpoint. */
+.header__toggle {
+  display: none;
+  min-width: var(--hotspot-tap-min, 44px);
+  min-height: var(--hotspot-tap-min, 44px);
   align-items: center;
   justify-content: center;
-  height: var(--header-h);
-  box-sizing: border-box;
-  padding: 0 1rem;
-  background-color: var(--color-nav-bg);
+  border: 0;
+  background: transparent;
+  color: var(--header-item-color);
+  font-size: 1.25rem;
+  cursor: pointer;
 }
 
-.navigation {
+/* Collapsed menu surface (mobile): wordmark stays in the bar; items drop below. */
+.header__menu {
+  position: absolute;
+  top: var(--header-height);
+  left: 0;
+  right: 0;
   display: flex;
-  gap: 2rem;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--header-menu-surface);
+  -webkit-backdrop-filter: blur(var(--header-blur));
+  backdrop-filter: blur(var(--header-blur));
+}
+.header__menu .header__item {
+  font-size: 1rem;
 }
 
-.navigation a {
-  color: var(--color-nav-text);
-  transition: color 0.2s ease;
-  font-family: var(--font-primary);
-}
-
-.navigation a:hover,
-.navigation a.active {
-  color: var(--color-mercy-red);
-}
-
-.nav-divider {
-  color: var(--color-nav-text);
-  opacity: 0.4;
-  user-select: none;
-}
-
-.navigation .view-toggle {
-  color: var(--color-mercy-green);
-}
-
-.navigation .view-toggle:hover {
-  color: var(--color-mercy-white);
+@media (max-width: 640px) {
+  .header__items {
+    display: none; /* collapse to a single toggle (v2-site.md §3) */
+  }
+  .header__toggle {
+    display: inline-flex;
+  }
 }

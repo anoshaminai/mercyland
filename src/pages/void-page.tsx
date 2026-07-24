@@ -7,7 +7,6 @@ import { ScatteredObjects } from '../components/shared/scattered-objects';
 import { MODEL_URLS, MODELS_BY_NAME } from '../components/shared/model-manifest';
 import { VoidPostFX } from '../components/shared/void-post-fx';
 import { voidObjects } from '../data/void-objects';
-import { VoidNav } from '../components/VoidNav';
 import { ObjectDetail } from '../components/void/object-detail';
 import { LoadingOverlay } from '../components/void/loading-overlay';
 import type { VoidObject } from '../types/void';
@@ -40,7 +39,6 @@ export const VoidPage = () => {
 
   return (
     <div className="w-screen h-screen" style={{ backgroundColor: '#1a1a2e' }}>
-      <VoidNav />
       <Canvas camera={{ position: [0, 0, 12], fov: 60 }}>
         <SceneControls autoRotate={!selected} />
         <ScatteredObjects

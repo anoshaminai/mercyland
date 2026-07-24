@@ -6,7 +6,9 @@
 .scene {
   position: relative;
   width: 100%;
-  height: calc(100dvh - var(--header-h));
+  /* Sit below the fixed overlay header (nav_header.md): offset by its height and fill the rest. */
+  height: calc(100dvh - var(--header-height));
+  margin-top: var(--header-height);
   overflow: hidden;
   background: var(--color-mercy-black);
   touch-action: pan-y; /* allow vertical page scroll; horizontal used for panning */
