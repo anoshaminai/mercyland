@@ -94,6 +94,16 @@ html {
   --header-wordmark-font: var(--font-display); /* Eskapade Fraktur → MedievalSharp fallback */
   --header-wordmark-color: var(--color-mercy-white);
   --header-menu-surface: rgba(13, 11, 18, 0.92);
+
+  /* ── Overlay shell (spec v4 §4) ───────────────────────────────────────────
+     ONE shell, reused for every overlay id. Only inner content differs. */
+  --overlay-backdrop: rgba(0, 1, 2, 0.78);
+  --overlay-surface: #0d0b12;
+  --overlay-max-width: 640px;
+  --overlay-radius: 12px;
+  --overlay-media-radius: 8px;
+  --overlay-placeholder-bg: rgba(13, 11, 18, 0.72);
+  --overlay-text-color: var(--color-mercy-white);
 }
 
 body {

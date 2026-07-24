@@ -279,6 +279,137 @@
   .scene__return { flex: 1; text-align: center; }
 }
 
+/* ── Overlay shell (spec v4 §4) ───────────────────────────────────────────── */
+/* One shell, reused for every overlay id. The shell owns open/close/focus-trap/dismiss;
+   content owns what's inside. Mounted only while open → iframes unmount on close (contract #1). */
+.overlay__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60; /* above the header (40) */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--overlay-backdrop);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+.overlay__panel {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--overlay-max-width);
+  max-height: calc(100dvh - 48px);
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--overlay-radius);
+  background: var(--overlay-surface);
+  color: var(--overlay-text-color);
+  font-family: var(--font-primary);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+}
+.overlay__dismiss {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  min-width: var(--hotspot-tap-min);
+  min-height: var(--hotspot-tap-min);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--overlay-text-color);
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+.overlay__dismiss:hover,
+.overlay__dismiss:focus-visible {
+  background: rgba(255, 255, 255, 0.1);
+  outline: none;
+}
+.overlay__dismiss:focus-visible { outline: 2px solid var(--hotspot-hover-bg); }
+/* Content scrolls WITHIN the shell; the scene behind never scrolls (contract #4). */
+.overlay__body {
+  overflow-y: auto;
+  padding: 40px 24px 24px;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Embedded media (contract #3: reserve aspect ratio before load). */
+.embed-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--overlay-media-radius);
+  overflow: hidden;
+  background: var(--overlay-placeholder-bg);
+}
+.embed-media > iframe,
+.embed-media > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: cover;
+}
+/* Click-to-load placeholder (contract #7: embed budget → don't auto-mount iframes). */
+.embed-media__load {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  background: var(--overlay-placeholder-bg);
+  color: var(--overlay-text-color);
+  font-family: var(--font-primary);
+  font-size: 13px;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+.embed-media__load:hover,
+.embed-media__load:focus-visible { color: var(--hotspot-hover-bg); outline: none; }
+.embed-media__play {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+/* Simple image gallery (BTS overlay). */
+.gallery__stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--overlay-media-radius);
+  overflow: hidden;
+  background: var(--overlay-placeholder-bg);
+}
+.gallery__stage img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gallery__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+}
+.gallery__nav {
+  min-width: var(--hotspot-tap-min);
+  min-height: var(--hotspot-tap-min);
+  border: 0;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--overlay-text-color);
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+.gallery__nav:disabled { opacity: 0.35; cursor: default; }
+.gallery__count { font-size: 12px; letter-spacing: 1px; opacity: 0.8; }
+
 /* Respect reduced motion for intra-scene panning + hover lift. */
 @media (prefers-reduced-motion: reduce) {
   .hotspot__btn { transition: background-color 160ms ease, color 160ms ease; }

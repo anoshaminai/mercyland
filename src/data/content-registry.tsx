@@ -9,6 +9,9 @@
 
 import type { ComponentType } from 'react';
 import type { ContentId } from '../types/world.types';
+import { MonsterDenied } from '../components/world/content/monster-denied';
+import { SummertimeVideo } from '../components/world/content/summertime-video';
+import { SummertimeBTS } from '../components/world/content/summertime-bts';
 
 // A content component receives whatever `props` the scene/hotspot passed (see ScenePanel.props
 // and the overlay target's `props`). Keep each component's own state internal.
@@ -35,6 +38,10 @@ Listen to it while driving in your car nowhere in particular, listen to it while
 
 We've lived so many lives already in this beautiful, brutal country. Bored to death by the monotony of school and work, reckless agents of our own destruction in so many downtowns, pathetic creatures seeking refuge in mountains and bayous. No matter how bad it gets I can't help but say — thank god for this — for this life and this world. Thank God for Mercy Land.`;
 
+// summertime overlays. TODO: fill with the real YouTube id + behind-the-scenes image URLs.
+export const summertimeYouTubeId = ''; // TODO get id
+export const summertimeBTSImages: string[] = []; // TODO add BTS photos
+
 // ── Component stubs — implement per spec §4 ──────────────────────────────────
 // Replace each `Stub` with a real component. Signatures shown for the props each receives.
 
@@ -47,14 +54,7 @@ const LjConversation: ContentComponent = () => null; // TODO
 /** scene panel · flag_void. Renders `flagStatement`. */
 const FlagStatement: ContentComponent = () => null; // TODO
 
-/** overlay · house_monster "go home". Short denial text: "You're not ready to go home <3" */
-const MonsterDenied: ContentComponent = () => null; // TODO
-
-/** overlay · summertime "join the party". YouTube embed. props: { youtubeId } TODO get id */
-const SummertimeVideo: ContentComponent = () => null; // TODO (youtube-nocookie, unmount on close)
-
-/** overlay · summertime "spy on the party". Image gallery. props: { images: string[] } TODO */
-const SummertimeBTS: ContentComponent = () => null; // TODO
+// Overlay content (implemented) — MonsterDenied, SummertimeVideo, SummertimeBTS are imported above.
 
 export const contentRegistry: Record<ContentId, ContentComponent> = {
   emailSignup: EmailSignup,
