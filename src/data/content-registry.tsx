@@ -9,6 +9,9 @@
 
 import type { ComponentType } from 'react';
 import type { ContentId } from '../types/world.types';
+import { EmailSignup } from '../components/world/content/email-signup';
+import { LjConversation } from '../components/world/content/lj-conversation';
+import { FlagStatement } from '../components/world/content/flag-statement';
 import { MonsterDenied } from '../components/world/content/monster-denied';
 import { SummertimeVideo } from '../components/world/content/summertime-video';
 import { SummertimeBTS } from '../components/world/content/summertime-bts';
@@ -42,19 +45,10 @@ We've lived so many lives already in this beautiful, brutal country. Bored to de
 export const summertimeYouTubeId = ''; // TODO get id
 export const summertimeBTSImages: string[] = []; // TODO add BTS photos
 
-// ── Component stubs — implement per spec §4 ──────────────────────────────────
-// Replace each `Stub` with a real component. Signatures shown for the props each receives.
-
-/** scene panel · mailbox. Formspree `mldnjygq` behind a single integration module (spec §8). */
-const EmailSignup: ContentComponent = () => null; // TODO
-
-/** scene panel · both computer rooms. props: { messageKey: 'void' | 'chat' } → ljMessages[key] */
-const LjConversation: ContentComponent = () => null; // TODO
-
-/** scene panel · flag_void. Renders `flagStatement`. */
-const FlagStatement: ContentComponent = () => null; // TODO
-
-// Overlay content (implemented) — MonsterDenied, SummertimeVideo, SummertimeBTS are imported above.
+// ── Registry ─────────────────────────────────────────────────────────────────
+// All content components are implemented and imported above. Panels: emailSignup (mailbox form),
+// ljConversation (computer rooms), flagStatement (flag_void). Overlays: monsterDenied,
+// summertimeVideo, summertimeBTS. Each works in either host (spec §4).
 
 export const contentRegistry: Record<ContentId, ContentComponent> = {
   emailSignup: EmailSignup,

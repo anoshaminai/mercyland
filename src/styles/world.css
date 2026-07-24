@@ -410,6 +410,73 @@
 .gallery__nav:disabled { opacity: 0.35; cursor: default; }
 .gallery__count { font-size: 12px; letter-spacing: 1px; opacity: 0.8; }
 
+/* ── Panel content (spec v4 §4 scene panels) ──────────────────────────────── */
+.panel-heading {
+  font-family: var(--font-secondary);
+  font-size: 1.4rem;
+  margin: 0 0 12px;
+}
+
+/* flagStatement */
+.flag-statement p {
+  margin: 0 0 1em;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+.flag-statement p:last-child { margin-bottom: 0; }
+
+/* ljConversation */
+.lj-conversation { display: flex; flex-direction: column; gap: 10px; }
+.lj-bubble {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 14px 14px 14px 4px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.95rem;
+  line-height: 1.45;
+  align-self: flex-start;
+  max-width: 88%;
+}
+
+/* emailSignup (mailbox panel) */
+.signup { display: flex; flex-direction: column; gap: 14px; }
+.signup__consent { margin: 0; font-size: 12px; line-height: 1.5; opacity: 0.78; }
+.signup__row { display: flex; flex-direction: column; gap: 6px; }
+.signup__label { font-size: 12px; letter-spacing: 1px; text-transform: lowercase; }
+.signup__input {
+  padding: 11px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--overlay-text-color, #fff);
+  font-family: var(--font-primary);
+  font-size: 14px;
+}
+.signup__input[aria-invalid='true'] { border-color: var(--color-mercy-red); }
+.signup__submit {
+  min-height: var(--hotspot-tap-min);
+  padding: 11px 16px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--hotspot-hover-bg);
+  color: var(--hotspot-hover-color);
+  font-family: var(--font-primary);
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+.signup__submit:disabled { opacity: 0.6; cursor: default; }
+.signup__error { margin: 0; color: var(--color-mercy-red); font-size: 12px; }
+.signup__suggest {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--color-mercy-green);
+  text-decoration: underline;
+  cursor: pointer;
+  font: inherit;
+}
+.signup__success { font-family: var(--font-secondary); font-size: 1.25rem; text-align: center; margin: 0; }
+
 /* Respect reduced motion for intra-scene panning + hover lift. */
 @media (prefers-reduced-motion: reduce) {
   .hotspot__btn { transition: background-color 160ms ease, color 160ms ease; }

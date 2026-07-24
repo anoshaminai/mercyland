@@ -9,9 +9,10 @@ import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { world } from '../data/scenes.data';
 import { contentRegistry } from '../data/content-registry';
-import type { ContentId, Hotspot, ScenePanel, SceneId } from '../types/world.types';
+import type { ContentId, Hotspot, ScenePanel as ScenePanelData, SceneId } from '../types/world.types';
 import { Scene } from '../components/world/scene';
 import { OverlayShell } from '../components/world/overlay-shell';
+import { ScenePanel } from '../components/world/scene-panel';
 
 interface OverlayState {
   content: ContentId;
@@ -63,16 +64,9 @@ export function WorldPage() {
     setHistory([]);
   }, []);
 
-  // WIP panel host — ScenePanel + content-registry components are the next step.
-  const renderPanel = useCallback((panel: ScenePanel) => (
-    <div style={{ fontSize: 13, lineHeight: 1.5, textAlign: 'center', opacity: 0.85 }}>
-      <div style={{ fontFamily: 'var(--font-secondary)', fontSize: 16, marginBottom: 6 }}>
-        scene panel
-      </div>
-      <code>{panel.content}</code>
-      <div style={{ opacity: 0.6, marginTop: 6 }}>(content component — next step)</div>
-    </div>
-  ), []);
+  // Persistent scene content, hosted from the registry (spec §4). Scene provides the fixed
+  // foreground frame; ScenePanel resolves the content id.
+  const renderPanel = useCallback((panel: ScenePanelData) => <ScenePanel panel={panel} />, []);
 
   return (
     <>
