@@ -27,7 +27,7 @@ export const GatePage = () => {
     <div className="w-screen h-screen bg-mercy-black flex items-center justify-center px-4">
       <div className="flex flex-col items-center gap-8 max-w-[560px] w-full">
         <h1 className="text-mercy-pink font-secondary text-4xl md:text-5xl text-center">
-          chat world
+          Welcome to Chat World!
         </h1>
         <p className="text-mercy-white font-primary text-sm md:text-base text-center opacity-80">
           leave your email to enter

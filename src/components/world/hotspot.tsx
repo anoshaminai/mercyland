@@ -1,0 +1,88 @@
+// Mercy Land — House World: Hotspot (spec v4 §2)
+// The key consistent primitive: a clickable label anchored to a photo feature. This component
+// owns the *behavior contract* (real focusable DOM, hover==focus, 44px tap floor, scrim
+// legibility, external cue, reserved visited/locked). Look comes entirely from §6 tokens.
+//
+// Positioning: the component places itself at its normalized `anchor` (percent of the parent
+// image box, which the Scene sizes). `offset` nudges the label off a busy feature. Whether a
+// hotspot is on- or off-viewport is the Scene's concern — an off-viewport hotspot still renders
+// here, in the DOM and in tab order (the accessibility floor, §5); the Scene additionally draws
+// an aria-hidden EdgeIndicator for it.
+
+import type { CSSProperties } from 'react';
+import type { Hotspot as HotspotData } from '../../types/world.types';
+
+export interface HotspotProps {
+  hotspot: HotspotData;
+  /** Fired when the hotspot is activated (click / Enter / Space) for non-external targets.
+   *  External targets are plain anchors and navigate themselves — `onActivate` is not called. */
+  onActivate: (hotspot: HotspotData) => void;
+  /** Fired when the hotspot receives focus. The Scene uses this to auto-pan an off-viewport
+   *  hotspot into view (focus-driven panning, §5). */
+  onFocus?: (hotspot: HotspotData) => void;
+  /** Density-cap overflow: render as a compact marker that reveals its label on hover/focus.
+   *  Still a full 44px focusable control; nothing is unmounted (§5). */
+  collapsed?: boolean;
+  /** tabIndex passthrough (Scene sets authored list order via natural DOM order; default 0). */
+}
+
+export function Hotspot({ hotspot, onActivate, onFocus, collapsed }: HotspotProps) {
+  const { label, anchor, offset, target } = hotspot;
+  const isExternal = target.type === 'external';
+
+  // Anchor is normalized 0–1 on the full scene image; the parent box is that image. Offset
+  // (if any) nudges the label in the same normalized space.
+  const style: CSSProperties = {
+    left: `${(anchor.x + (offset?.x ?? 0)) * 100}%`,
+    top: `${(anchor.y + (offset?.y ?? 0)) * 100}%`,
+  };
+
+  const className = `hotspot${collapsed ? ' hotspot--collapsed' : ''}`;
+
+  const inner = (
+    <>
+      <span className="hotspot__label">{label}</span>
+      {isExternal ? (
+        <span className="hotspot__ext" aria-hidden="true">↗</span>
+      ) : (
+        <span className="hotspot__cue" aria-hidden="true">▸</span>
+      )}
+    </>
+  );
+
+  // Locked hotspots are reserved for future gating (§2) — default no-op: render, but inert.
+  const disabled = hotspot.locked === true;
+
+  if (isExternal && target.type === 'external') {
+    return (
+      <div className={className} style={style}>
+        <a
+          className="hotspot__btn"
+          href={target.url || undefined}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`${label} (opens in a new tab)`}
+          aria-disabled={disabled || undefined}
+          onFocus={() => onFocus?.(hotspot)}
+        >
+          {inner}
+        </a>
+      </div>
+    );
+  }
+
+  return (
+    <div className={className} style={style}>
+      <button
+        type="button"
+        className="hotspot__btn"
+        aria-label={label}
+        disabled={disabled}
+        onClick={() => onActivate(hotspot)}
+        onFocus={() => onFocus?.(hotspot)}
+      >
+        {inner}
+      </button>
+    </div>
+  );
+}

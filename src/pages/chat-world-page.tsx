@@ -6,7 +6,6 @@ import { SceneControls } from '../components/shared/scene-controls';
 import { ScatteredObjects } from '../components/shared/scattered-objects';
 import { VoidPostFX } from '../components/shared/void-post-fx';
 import { chatMessages } from '../data/chat-messages';
-import { VoidNav } from '../components/VoidNav';
 import { ChatWorldMenu } from '../components/chat-world/chat-world-menu';
 import { ChatMessageDetail } from '../components/chat-world/chat-message-detail';
 import { LoadingOverlay } from '../components/void/loading-overlay';
@@ -39,7 +38,6 @@ export const ChatWorldPage = () => {
 
   return (
     <div className="w-screen h-screen" style={{ backgroundColor: '#2a0a1e' }}>
-      <VoidNav />
       <ChatWorldMenu />
       <Canvas camera={{ position: [0, 0, 12], fov: 60 }}>
         <SceneControls autoRotate={!selected} backgroundSrc={chatWorldBgUrl} />
@@ -52,7 +50,7 @@ export const ChatWorldPage = () => {
         />
         <VoidPostFX />
       </Canvas>
-      <LoadingOverlay />
+      <LoadingOverlay label="entering chat world…" />
       <AnimatePresence>
         {selected && (
           <ChatMessageDetail content={selected.content} onClose={() => setSelected(null)} />

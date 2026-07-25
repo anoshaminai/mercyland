@@ -1,0 +1,486 @@
+/* Mercy Land — House World: generic component styles (spec v4 §1, §2, §5).
+   Structure + behavior only. Every visual value is a token from index.css (§6);
+   the designer overrides tokens, never this file. */
+
+/* ── Scene stage ─────────────────────────────────────────────────────────── */
+.scene {
+  position: relative;
+  width: 100%;
+  /* Sit below the fixed overlay header (nav_header.md): offset by its height and fill the rest. */
+  height: calc(100dvh - var(--header-height));
+  margin-top: var(--header-height);
+  overflow: hidden;
+  background: var(--color-mercy-black);
+  touch-action: pan-y; /* allow vertical page scroll; horizontal used for panning */
+}
+
+/* Decorative frame chrome (inset border + corner dots). Purely cosmetic → pointer-events:none. */
+.scene__frame {
+  position: absolute;
+  inset: 8px;
+  border: var(--frame-width) solid var(--frame-color);
+  pointer-events: none;
+  z-index: 3;
+}
+.scene__frame::before,
+.scene__frame::after,
+.scene__corner {
+  content: "";
+  position: absolute;
+  width: var(--frame-corner-size);
+  height: var(--frame-corner-size);
+  border-radius: 50%;
+  background: var(--frame-color);
+}
+.scene__frame::before { top: calc(var(--frame-corner-size) / -2); left: calc(var(--frame-corner-size) / -2); }
+.scene__frame::after  { top: calc(var(--frame-corner-size) / -2); right: calc(var(--frame-corner-size) / -2); }
+.scene__corner--bl { bottom: calc(var(--frame-corner-size) / -2); left: calc(var(--frame-corner-size) / -2); }
+.scene__corner--br { bottom: calc(var(--frame-corner-size) / -2); right: calc(var(--frame-corner-size) / -2); }
+
+/* The window that clips the (possibly panned) image box. */
+.scene__stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* The image box: sized AND positioned in JS (top-left origin, offset via transform) so the pan
+   clamp works in one coordinate space. Do not re-add flex centring here — combining it with the
+   transform puts the box's rest position at the stage centre, which silently halves the pan range
+   and makes the left edge of the photo unreachable. Hotspots are % of this box. */
+.scene__box {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.scene__box--pannable { cursor: grab; }
+.scene__box--pannable:active { cursor: grabbing; }
+
+.scene__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+/* Blackletter scene title with a legibility scrim (real text — SEO + crawlers, spec §2). */
+.scene__title {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 18px 20px 40px;
+  font-family: var(--scene-title-font);
+  color: var(--scene-title-color);
+  font-size: clamp(22px, 4vw, 40px);
+  line-height: 1.05;
+  background: var(--scene-title-scrim);
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* ── Hotspot ─────────────────────────────────────────────────────────────── */
+.hotspot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.hotspot__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+  min-width: var(--hotspot-tap-min);
+  min-height: var(--hotspot-tap-min);
+  padding: 8px 12px;
+  margin: 0;
+  border: 0;
+  border-radius: var(--hotspot-radius);
+  background: var(--hotspot-scrim);              /* legibility guarantee — always present */
+  -webkit-backdrop-filter: blur(var(--hotspot-scrim-blur));
+  backdrop-filter: blur(var(--hotspot-scrim-blur));
+  color: var(--hotspot-label-color);
+  font-family: var(--hotspot-label-font);
+  font-size: var(--hotspot-label-size);
+  letter-spacing: var(--hotspot-label-tracking);
+  line-height: 1;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+/* hover == focus: identical treatment (spec §2). */
+.hotspot__btn:hover,
+.hotspot__btn:focus-visible {
+  background: var(--hotspot-hover-bg);
+  color: var(--hotspot-hover-color);
+  transform: translateY(calc(-1 * var(--hotspot-hover-lift)));
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  outline: none;
+}
+.hotspot__btn:focus-visible {
+  outline: 2px solid var(--hotspot-hover-bg);
+  outline-offset: 3px;
+}
+.hotspot__btn:active {
+  transform: translateY(0) scale(0.96);
+}
+
+/* Directional "clickable" cue — appears on hover/focus. */
+.hotspot__cue {
+  display: inline-block;
+  width: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 160ms ease, width 160ms ease;
+}
+.hotspot__btn:hover .hotspot__cue,
+.hotspot__btn:focus-visible .hotspot__cue {
+  width: 0.7em;
+  opacity: 1;
+}
+
+/* External-link cue (↗) — always visible for off-site targets. */
+.hotspot__ext {
+  font-size: 0.85em;
+  color: var(--hotspot-external-cue-color);
+}
+
+/* Collapsed variant (density cap overflow): a compact marker that reveals its label on
+   hover/focus. Still a real 44px focusable button; nothing is unmounted. */
+.hotspot--collapsed .hotspot__label {
+  max-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-width 200ms ease, opacity 200ms ease, margin 200ms ease;
+}
+.hotspot--collapsed .hotspot__btn { padding: 8px; gap: 0; }
+.hotspot--collapsed .hotspot__btn::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+.hotspot--collapsed .hotspot__btn:hover .hotspot__label,
+.hotspot--collapsed .hotspot__btn:focus-visible .hotspot__label {
+  max-width: 16ch;
+  opacity: 1;
+  margin-left: 6px;
+}
+
+/* ── Edge indicator (mobile off-viewport affordance, spec §5) ─────────────── */
+/* Visual affordance for a hotspot outside the viewport. NOT a separate control:
+   aria-hidden + not in tab order. Tapping PANS the scene (does not activate). The real
+   focusable hotspot button stays in the DOM at its anchored (off-screen) position. */
+.edge-indicator {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  box-sizing: border-box;
+  min-height: var(--hotspot-tap-min);
+  padding: 6px 8px;
+  border: 0;
+  background: var(--edge-indicator-bg);
+  color: var(--hotspot-label-color);
+  font-family: var(--hotspot-label-font);
+  font-size: var(--edge-indicator-size);
+  letter-spacing: var(--hotspot-label-tracking);
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transform: translateY(-50%);
+  z-index: 3;
+}
+.edge-indicator--left {
+  left: 0;
+  border-radius: 0 var(--edge-indicator-radius) var(--edge-indicator-radius) 0;
+}
+.edge-indicator--right {
+  right: 0;
+  flex-direction: row-reverse;
+  border-radius: var(--edge-indicator-radius) 0 0 var(--edge-indicator-radius);
+}
+
+/* ── Universal returns (back / return to start, spec §3, §5) ──────────────── */
+/* Same on-screen position on every scene; on mobile they occupy the bottom thumb zone. */
+.scene__returns {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  display: flex;
+  gap: 10px;
+  z-index: 5;
+}
+.scene__return {
+  min-height: var(--hotspot-tap-min);
+  padding: 8px 14px;
+  border: 0;
+  border-radius: var(--nav-return-radius);
+  background: var(--nav-return-bg);
+  -webkit-backdrop-filter: blur(var(--hotspot-scrim-blur));
+  backdrop-filter: blur(var(--hotspot-scrim-blur));
+  color: var(--nav-return-color);
+  font-family: var(--hotspot-label-font);
+  font-size: var(--hotspot-label-size);
+  letter-spacing: var(--hotspot-label-tracking);
+  cursor: pointer;
+  transition: background-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+.scene__return:hover,
+.scene__return:focus-visible {
+  background: var(--hotspot-hover-bg);
+  color: var(--hotspot-hover-color);
+  outline: none;
+}
+.scene__return:focus-visible {
+  outline: 2px solid var(--hotspot-hover-bg);
+  outline-offset: 3px;
+}
+
+/* ── Scene panel (persistent content host, spec §4/§5) ────────────────────── */
+/* Fixed foreground above the photo; never panned off-screen, never overlaps the thumb zone. */
+.scene__panel {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: min(92vw, var(--overlay-max-width, 640px));
+  width: 100%;
+  max-height: calc(100% - 140px);
+  overflow-y: auto;
+  padding: 20px;
+  border-radius: var(--scene-panel-radius);
+  background: var(--scene-panel-bg);
+  -webkit-backdrop-filter: blur(var(--hotspot-scrim-blur));
+  backdrop-filter: blur(var(--hotspot-scrim-blur));
+  color: var(--hotspot-label-color);
+  font-family: var(--hotspot-label-font);
+  z-index: 4;
+}
+
+/* Mobile: thinner frame, thumb-zone returns already bottom-anchored. */
+@media (max-width: 640px) {
+  .scene__frame { border-width: var(--frame-width-mobile); }
+  .scene__returns { left: 50%; transform: translateX(-50%); width: calc(100% - 32px); justify-content: center; }
+  .scene__return { flex: 1; text-align: center; }
+}
+
+/* ── Overlay shell (spec v4 §4) ───────────────────────────────────────────── */
+/* One shell, reused for every overlay id. The shell owns open/close/focus-trap/dismiss;
+   content owns what's inside. Mounted only while open → iframes unmount on close (contract #1). */
+.overlay__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60; /* above the header (40) */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--overlay-backdrop);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+.overlay__panel {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--overlay-max-width);
+  max-height: calc(100dvh - 48px);
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--overlay-radius);
+  background: var(--overlay-surface);
+  color: var(--overlay-text-color);
+  font-family: var(--font-primary);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+}
+.overlay__dismiss {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  min-width: var(--hotspot-tap-min);
+  min-height: var(--hotspot-tap-min);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--overlay-text-color);
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+.overlay__dismiss:hover,
+.overlay__dismiss:focus-visible {
+  background: rgba(255, 255, 255, 0.1);
+  outline: none;
+}
+.overlay__dismiss:focus-visible { outline: 2px solid var(--hotspot-hover-bg); }
+/* Content scrolls WITHIN the shell; the scene behind never scrolls (contract #4). */
+.overlay__body {
+  overflow-y: auto;
+  padding: 40px 24px 24px;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Embedded media (contract #3: reserve aspect ratio before load). */
+.embed-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--overlay-media-radius);
+  overflow: hidden;
+  background: var(--overlay-placeholder-bg);
+}
+.embed-media > iframe,
+.embed-media > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: cover;
+}
+/* Click-to-load placeholder (contract #7: embed budget → don't auto-mount iframes). */
+.embed-media__load {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  background: var(--overlay-placeholder-bg);
+  color: var(--overlay-text-color);
+  font-family: var(--font-primary);
+  font-size: 13px;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+.embed-media__load:hover,
+.embed-media__load:focus-visible { color: var(--hotspot-hover-bg); outline: none; }
+.embed-media__play {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+/* Simple image gallery (BTS overlay). */
+.gallery__stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--overlay-media-radius);
+  overflow: hidden;
+  background: var(--overlay-placeholder-bg);
+}
+.gallery__stage img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gallery__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+}
+.gallery__nav {
+  min-width: var(--hotspot-tap-min);
+  min-height: var(--hotspot-tap-min);
+  border: 0;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--overlay-text-color);
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+.gallery__nav:disabled { opacity: 0.35; cursor: default; }
+.gallery__count { font-size: 12px; letter-spacing: 1px; opacity: 0.8; }
+
+/* ── Panel content (spec v4 §4 scene panels) ──────────────────────────────── */
+.panel-heading {
+  font-family: var(--font-secondary);
+  font-size: 1.4rem;
+  margin: 0 0 12px;
+}
+
+/* flagStatement */
+.flag-statement p {
+  margin: 0 0 1em;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+.flag-statement p:last-child { margin-bottom: 0; }
+
+/* ljConversation */
+.lj-conversation { display: flex; flex-direction: column; gap: 10px; }
+.lj-bubble {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 14px 14px 14px 4px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.95rem;
+  line-height: 1.45;
+  align-self: flex-start;
+  max-width: 88%;
+}
+
+/* emailSignup (mailbox panel) */
+.signup { display: flex; flex-direction: column; gap: 14px; }
+.signup__consent { margin: 0; font-size: 12px; line-height: 1.5; opacity: 0.78; }
+.signup__row { display: flex; flex-direction: column; gap: 6px; }
+.signup__label { font-size: 12px; letter-spacing: 1px; text-transform: lowercase; }
+.signup__input {
+  padding: 11px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--overlay-text-color, #fff);
+  font-family: var(--font-primary);
+  font-size: 14px;
+}
+.signup__input[aria-invalid='true'] { border-color: var(--color-mercy-red); }
+.signup__submit {
+  min-height: var(--hotspot-tap-min);
+  padding: 11px 16px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--hotspot-hover-bg);
+  color: var(--hotspot-hover-color);
+  font-family: var(--font-primary);
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+.signup__submit:disabled { opacity: 0.6; cursor: default; }
+.signup__error { margin: 0; color: var(--color-mercy-red); font-size: 12px; }
+.signup__suggest {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--color-mercy-green);
+  text-decoration: underline;
+  cursor: pointer;
+  font: inherit;
+}
+.signup__success { font-family: var(--font-secondary); font-size: 1.25rem; text-align: center; margin: 0; }
+
+/* Respect reduced motion for intra-scene panning + hover lift. */
+@media (prefers-reduced-motion: reduce) {
+  .hotspot__btn { transition: background-color 160ms ease, color 160ms ease; }
+  .hotspot__btn:hover,
+  .hotspot__btn:focus-visible { transform: none; }
+}

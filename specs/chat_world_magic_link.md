@@ -67,7 +67,7 @@ Backend base URL: `https://api.thankgodformercyland.com`. All JSON.
 | POST | `/api/auth/logout` | — | `200 { ok: true }` | cookie |
 | POST | `/api/subscribe` | `{ email }` | `200 { ok: true }` | none |
 
-`/api/subscribe` is for the `/flat` `EmailSignup` — no magic link, just adds to `emails:verified`.
+`/api/subscribe` is for the `/termites` `EmailSignup` — no magic link, just adds to `emails:verified`.
 
 **CORS:** `Access-Control-Allow-Origin: https://thankgodformercyland.com` (exact), `Access-Control-Allow-Credentials: true`. Preflight on POST with JSON triggers.
 

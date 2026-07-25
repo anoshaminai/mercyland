@@ -6,7 +6,7 @@ export const ViewToggle = () => {
   const [, setPreference] = useViewPreference();
   const isVoid = location.pathname === '/void';
 
-  const target = isVoid ? '/flat' : '/void';
+  const target = isVoid ? '/termites' : '/void';
   const label = isVoid ? 'FLAT VIEW' : 'ENTER THE VOID';
 
   const handleClick = () => {
