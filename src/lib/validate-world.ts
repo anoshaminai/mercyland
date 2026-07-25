@@ -24,9 +24,10 @@ export function validateWorld(world: WorldConfig): WorldIssue[] {
       issues.push({ level: 'error', scene: id, message: `panel content "${scene.panel.content}" not in registry` });
     }
 
-    // pannable scenes need a portrait crop
-    if (scene.layout === 'pannable' && !scene.imageTall) {
-      issues.push({ level: 'warn', scene: id, message: 'pannable scene has no imageTall (portrait crop)' });
+    // `imageTall` is optional (mobile cover-fits imageWide), but mobileZoom only does something
+    // on the pannable path — setting it elsewhere is a data mistake, not a taste call.
+    if (scene.layout !== 'pannable' && scene.mobileZoom !== undefined) {
+      issues.push({ level: 'warn', scene: id, message: 'mobileZoom set on a non-pannable scene (ignored)' });
     }
 
     let outboundTravel = 0;

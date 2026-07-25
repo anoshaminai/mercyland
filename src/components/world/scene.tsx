@@ -5,14 +5,15 @@
 //
 // Two layouts:
 //   • static   — interior/void scenes: image contain-fit, centered, no panning.
-//   • pannable — exterior scenes on MOBILE: the portrait crop (authored wider than the viewport)
-//                renders in a horizontally pannable window with edge indicators and
+//   • pannable — exterior scenes on MOBILE: the photo is COVER-fit (scaled up until it fills the
+//                stage) and the overflow becomes pan travel, with edge indicators and
 //                focus-driven panning (the accessibility floor). On desktop, pannable shows the
 //                whole scene at once (open decision §1: desktop = full scene, panning is mobile).
 //
-// NOTE: every scene's `imageTall` is still a TODO. Until a wider-than-viewport portrait crop
-// exists, mobile contain-fits `imageWide` and panning correctly no-ops (spec §5). The pannable
-// path below engages automatically once tall crops are authored — no code change.
+// Panning does NOT depend on a bespoke portrait crop. Cover-fit is computed from whatever source
+// is available, so a 16:9 `imageWide` on a phone is already ~2.5 viewports wide. `imageTall` is an
+// optimisation (better mobile composition, fewer wasted pixels) picked up automatically when one
+// exists; `scene.mobileZoom` + `scene.focal` are the knobs that make the wide source read well.
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
@@ -58,8 +59,9 @@ export function Scene({ scene, onActivate, onBack, onReturnToStart, renderPanel 
 
   const wideSrc = resolveSceneAsset(scene.imageWide);
   const tallSrc = resolveSceneAsset(scene.imageTall);
-  const useTall = scene.layout === 'pannable' && isMobile && !!tallSrc;
-  const src = useTall ? tallSrc : wideSrc;
+  // The pannable *view* is a property of layout + viewport, not of which crop happens to exist.
+  const isPannableView = scene.layout === 'pannable' && isMobile;
+  const src = (isPannableView && tallSrc) || wideSrc;
 
   const stageRef = useRef<HTMLDivElement>(null);
   const [stage, setStage] = useState({ w: 0, h: 0 });
@@ -89,19 +91,39 @@ export function Scene({ scene, onActivate, onBack, onReturnToStart, renderPanel 
     return unsub;
   }, [panX]);
 
-  // Image box size: image aspect, fit to the stage (contain), or fill-height when panning.
+  // Image box size. Two fits, both derived from the photo's own aspect:
+  //   contain — the whole photo inside the stage (desktop, and every `static` scene).
+  //   cover   — the smallest scale that leaves no letterbox; the excess width is pan travel.
+  //             `mobileZoom` multiplies it (>1 pushes in and crops vertically, <1 pulls back and
+  //             letterboxes), clamped so a bad value can never shrink below contain.
   const { boxW, boxH, canPan } = useMemo(() => {
     if (!aspect || !stage.w || !stage.h) return { boxW: stage.w, boxH: stage.h, canPan: false };
-    if (useTall) {
-      const bw = stage.h * aspect;
-      return { boxW: bw, boxH: stage.h, canPan: bw > stage.w + 1 };
-    }
-    // contain-fit
-    if (stage.w / stage.h > aspect) return { boxW: stage.h * aspect, boxH: stage.h, canPan: false };
-    return { boxW: stage.w, boxH: stage.w / aspect, canPan: false };
-  }, [aspect, stage.w, stage.h, useTall]);
+    const fillH = stage.h * aspect; // width the photo would have if it filled the stage height
+    const containW = Math.min(stage.w, fillH);
+    if (!isPannableView) return { boxW: containW, boxH: containW / aspect, canPan: false };
+    const coverW = Math.max(stage.w, fillH);
+    const bw = Math.max(containW, coverW * (scene.mobileZoom ?? 1));
+    return { boxW: bw, boxH: bw / aspect, canPan: bw > stage.w + 1 };
+  }, [aspect, stage.w, stage.h, isPannableView, scene.mobileZoom]);
 
-  const clampPan = useCallback((x: number) => Math.min(0, Math.max(stage.w - boxW, x)), [stage.w, boxW]);
+  // `panX` is the box's absolute left offset within the stage (the box is positioned top-left, so
+  // centring is part of this number, not a separate CSS concern — mixing the two silently broke
+  // the clamp range). When the photo is narrower than the stage there is nothing to pan: centre.
+  const clampPan = useCallback(
+    (x: number) =>
+      boxW <= stage.w ? (stage.w - boxW) / 2 : Math.min(0, Math.max(stage.w - boxW, x)),
+    [stage.w, boxW],
+  );
+
+  // Vertical framing is fixed (panning is horizontal only, §5): hold `focal.y` at the centre when
+  // the photo overflows the stage, otherwise centre the letterboxed box.
+  const offsetY = useMemo(
+    () =>
+      boxH <= stage.h
+        ? (stage.h - boxH) / 2
+        : Math.min(0, Math.max(stage.h - boxH, stage.h / 2 - boxH * scene.focal.y)),
+    [boxH, stage.h, scene.focal.y],
+  );
 
   // Pan the viewport so a hotspot sits comfortably centered. Shared by focus-driven panning
   // (§5 accessibility floor) and edge-indicator taps. Never activates the hotspot.
@@ -116,12 +138,8 @@ export function Scene({ scene, onActivate, onBack, onReturnToStart, renderPanel 
 
   // Initial framing from the focal point (re-applied on resize / mode change).
   useEffect(() => {
-    if (!canPan) {
-      panX.set(0);
-      return;
-    }
     panX.set(clampPan(stage.w / 2 - boxW * scene.focal.x));
-  }, [canPan, clampPan, stage.w, boxW, scene.focal.x, panX]);
+  }, [clampPan, stage.w, boxW, scene.focal.x, panX]);
 
   // Focus that lands on an off-viewport hotspot must pan it into view (§5).
   const handleHotspotFocus = useCallback(
@@ -162,7 +180,7 @@ export function Scene({ scene, onActivate, onBack, onReturnToStart, renderPanel 
         {src ? (
           <motion.div
             className={`scene__box${canPan ? ' scene__box--pannable' : ''}`}
-            style={{ x: panX, width: boxW || undefined, height: boxH || undefined }}
+            style={{ x: panX, y: offsetY, width: boxW || undefined, height: boxH || undefined }}
             drag={canPan ? 'x' : false}
             dragConstraints={{ left: Math.min(0, stage.w - boxW), right: 0 }}
             dragElastic={0.04}
@@ -203,7 +221,7 @@ export function Scene({ scene, onActivate, onBack, onReturnToStart, renderPanel 
                 key={`edge-${r.h.id}`}
                 hotspot={r.h}
                 side={r.side}
-                top={Math.min(Math.max(r.h.anchor.y * boxH, 30), Math.max(stage.h - 30, 30))}
+                top={Math.min(Math.max(r.h.anchor.y * boxH + offsetY, 30), Math.max(stage.h - 30, 30))}
                 onPan={panToHotspot}
               />
             ))}

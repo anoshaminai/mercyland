@@ -41,17 +41,18 @@
 .scene__stage {
   position: absolute;
   inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   overflow: hidden;
   z-index: 1;
 }
 
-/* The image box: sized in JS to the photo's aspect. Hotspots are % of this box. */
+/* The image box: sized AND positioned in JS (top-left origin, offset via transform) so the pan
+   clamp works in one coordinate space. Do not re-add flex centring here — combining it with the
+   transform puts the box's rest position at the stage centre, which silently halves the pan range
+   and makes the left edge of the photo unreachable. Hotspots are % of this box. */
 .scene__box {
-  position: relative;
-  flex: none;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 .scene__box--pannable { cursor: grab; }
 .scene__box--pannable:active { cursor: grabbing; }

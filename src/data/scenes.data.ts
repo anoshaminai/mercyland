@@ -5,17 +5,17 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // DATA STILL TO FILL (each marked `TODO` inline):
 //   • anchor coords — ALL are placeholder estimates; tune against the real images
-//   • imageTall — wider-than-viewport portrait crops for every `pannable` scene
+//   • focal.x / mobileZoom per pannable scene — tune on a real phone (mobile panning is LIVE off
+//     `imageWide`; `imageTall` is now an optional upgrade, not a blocker)
 //   • song 01 streaming URL (start_house)
 //   • summertime YouTube id + BTS photos (content-registry.tsx)
 //   • LJ conversation messages (content-registry.tsx, ljMessages)
 //   • display titles: computer_room_void, computer_room_chat_world, flag_void
-//   • mailbox photograph (need still)
 //   • flag statement producer names (content-registry.tsx)
 //
 // RESOLVED (folded in from graph review):
 //   • Issue 1  — computer_room_void now links to computer_room_chat_world (no longer orphaned)
-//   • Issue 3  — old landing lives at /flat (info nav); /termites retired for now
+//   • Issue 3  — old landing lives at /termites (nav item 'termites'); /flat redirects there
 //   • Issue 4  — desert "trespass" stays `external`; summertime "party" stays `overlay` (intentional)
 //   • Issue 5  — ljConversation is ONE shared component, fed per-scene via props.messageKey
 //   • Issue 6  — interior/void scenes marked layout:'static' (no panning)
@@ -30,8 +30,8 @@ const scenes: Record<SceneId, Scene> = {
     title: "Neighbor's House",
     layout: 'pannable',
     imageWide: 'start_house.png',
-    imageTall: 'start_house_tall.png', // TODO wide portrait crop
-    focal: { x: 0.5, y: 0.55 },        // TODO tune
+    focal: { x: 0.5, y: 0.55 },        // TODO tune: the point held centre-screen on mobile
+    mobileZoom: 1,                     // cover-fit. 16:9 source on a phone ≈ 2.6 screens of pan
     maxVisibleLabels: 4,               // 7 hotspots → 3 lowest-priority become edge/panned
     hotspots: [
       { id: 'computer', label: 'use computer room', anchor: { x: 0.66, y: 0.5 }, priority: 1,
@@ -41,7 +41,7 @@ const scenes: Record<SceneId, Scene> = {
       { id: 'gohome', label: 'go home', anchor: { x: 0.5, y: 0.86 }, priority: 3,
         target: { type: 'travel', sceneId: 'house_monster' } },
       { id: 'song01', label: 'song 01', anchor: { x: 0.4, y: 0.35 }, priority: 4,
-        target: { type: 'external', url: '' } }, // TODO streaming / song.link URL
+        target: { type: 'external', url: 'https://open.spotify.com/playlist/4LnrmDKBwdlSDkTOxLWIUV?si=129fed00f4df4168' } },
       { id: 'neighborhood', label: 'explore the neighborhood', labelShort: 'neighborhood',
         anchor: { x: 0.06, y: 0.55 }, priority: 5, // left edge → edge indicator on mobile
         target: { type: 'travel', sceneId: 'desert_house' } },
@@ -59,8 +59,8 @@ const scenes: Record<SceneId, Scene> = {
     title: "Scary Neighbor's House",
     layout: 'pannable',
     imageWide: 'desert_house.png',
-    imageTall: 'desert_house_tall.png', // TODO (1 hotspot → panning effectively no-ops)
     focal: { x: 0.5, y: 0.5 },
+    mobileZoom: 0.75,                   // only 1 hotspot — pull back so there's less empty roaming
     maxVisibleLabels: 4,
     hotspots: [
       { id: 'trespass', label: 'trespass', anchor: { x: 0.5, y: 0.55 }, priority: 1,
@@ -73,13 +73,13 @@ const scenes: Record<SceneId, Scene> = {
     title: "Parents' Friend's House",
     layout: 'pannable',
     imageWide: 'blue_house.png',
-    imageTall: 'blue_house_tall.png', // TODO
     focal: { x: 0.5, y: 0.55 },
+    mobileZoom: 1,                    // cover-fit; hotspots reach the left edge, so keep the travel
     maxVisibleLabels: 4,
     hotspots: [
-      { id: 'party', label: 'join the party', anchor: { x: 0.5, y: 0.6 }, priority: 1,
+      { id: 'party', label: 'enter the party', anchor: { x: 0.5, y: 0.6 }, priority: 1,
         target: { type: 'overlay', content: 'summertimeVideo' } },
-      { id: 'spy', label: 'spy on the party', anchor: { x: 0.32, y: 0.45 }, priority: 2,
+      { id: 'spy', label: 'spy', anchor: { x: 0.32, y: 0.45 }, priority: 2,
         target: { type: 'overlay', content: 'summertimeBTS' } },
       { id: 'gohome', label: 'go home', anchor: { x: 0.06, y: 0.5 }, priority: 3, // left edge
         target: { type: 'travel', sceneId: 'house_monster' } },
@@ -107,7 +107,8 @@ const scenes: Record<SceneId, Scene> = {
     id: 'mailbox',
     title: 'Sign Up to Hear from Mercy Land',
     layout: 'static',
-    imageWide: 'mailbox.png', // TODO need still
+    imageWide: 'hoops.png', 
+    imageTall: 'start_house_tall.png', // TODO wide portrait crop
     focal: { x: 0.5, y: 0.5 },
     hotspots: [],
     panel: { content: 'emailSignup' },

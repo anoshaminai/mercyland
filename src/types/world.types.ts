@@ -63,8 +63,15 @@ export interface Scene {
   title: string;
   layout: SceneLayout;
   imageWide: string;         // filename in assets/images/scenes/, resolved by the loader (see BUILD.md)
-  imageTall?: string;        // required for `pannable`; must be wider than the portrait viewport
-  focal: Vec2;               // initial viewport position (pannable) / framing center (static)
+  imageTall?: string;        // OPTIONAL taller crop preferred on mobile `pannable` scenes. Not a
+                             // prerequisite for panning — without it mobile cover-fits `imageWide`.
+  focal: Vec2;               // the point held at the centre of the mobile viewport: x = initial
+                             // pan position, y = vertical framing when the photo is taller than
+                             // the stage. Both 0–1 of the rendered image. Unused on `static`.
+  mobileZoom?: number;       // mobile `pannable` zoom, as a multiple of cover-fit. Default 1 =
+                             // fill the stage exactly. >1 pushes in (more pan travel, vertical
+                             // crop); <1 pulls back (less travel, letterbox bands). Clamped so it
+                             // can never shrink below contain-fit.
   maxVisibleLabels?: number; // mobile density cap; excess hotspots become edge indicators
   hotspots: Hotspot[];       // [] is valid (e.g. panel-only scenes)
   panel?: ScenePanel;        // persistent in-scene content (mailbox form, lore text)
