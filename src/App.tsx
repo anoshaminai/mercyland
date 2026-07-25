@@ -26,7 +26,10 @@ const App = () => {
         <Route element={<Layout />}>
           {/* The world root IS the House World now (v2-site.md). The wordmark returns here. */}
           <Route path="/" element={<WorldPage />} />
-          <Route path="/flat" element={<FlatPage />} />
+          <Route path="/termites" element={<FlatPage />} />
+          {/* Legacy: the flat view lived at /flat between the old /termites and this rename.
+              Keep the redirect so any shared link still lands somewhere real. */}
+          <Route path="/flat" element={<Navigate to="/termites" replace />} />
           <Route path="/void" element={<VoidPage />} />
           <Route path="/gate" element={<GatePage />} />
           <Route path="/chat-world" element={<ChatWorldPage />} />

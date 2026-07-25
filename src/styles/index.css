@@ -92,6 +92,9 @@ html {
   --header-item-color: var(--color-mercy-white);
   --header-item-active: var(--color-mercy-red);
   --header-wordmark-font: var(--font-display); /* Eskapade Fraktur → MedievalSharp fallback */
+  --header-wordmark-size: clamp(0.95rem, 4.2vw, 1.35rem); /* "Thank God for Mercy Land" is long —
+                                                             shrink it rather than let it collide
+                                                             with the mobile toggle */
   --header-wordmark-color: var(--color-mercy-white);
   --header-menu-surface: rgba(13, 11, 18, 0.92);
 

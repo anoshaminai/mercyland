@@ -1,24 +1,23 @@
 // Mercy Land — shared Header (spec: nav_header.md; v2-site.md §3)
 // ONE header, identical on every route, mounted app-level (see App.tsx Layout) as the
 // out-of-world utility layer. The wordmark returns to the world root (`/`) — on non-scene
-// routes (/void, /chat, /flat) it is the sole guaranteed way back. Structure + behavior are
+// routes (/void, /chat, /termites) it is the sole guaranteed way back. Structure + behavior are
 // locked here; the immersive skin is all §Design-token fill (Header.css reads the tokens).
 
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { MERCH_URL } from '../data/links';
+import { LISTEN_URL, MERCH_URL } from '../data/links';
 import '../styles/Header.css';
 
 type NavItem =
   | { label: string; kind: 'internal'; route: string }
   | { label: string; kind: 'external'; url: string };
 
-// Locked structure; some targets are still open decisions (nav_header.md §Open decisions).
+// Locked structure (nav_header.md). nav_header.md #1 is now resolved: `listen` is a single
+// external streaming link (Bandcamp), not a dedicated /listen route.
 const navItems: NavItem[] = [
-  { label: 'info', kind: 'internal', route: '/flat' },
-  // TODO(nav_header.md #1): dedicated /listen page or a single external streaming link.
-  // For now it points at the flat view's listen section (no /listen route exists yet).
-  { label: 'listen', kind: 'internal', route: '/flat#termites' },
+  { label: 'termites', kind: 'internal', route: '/termites' },
+  { label: 'listen', kind: 'external', url: LISTEN_URL },
   { label: 'merch', kind: 'external', url: MERCH_URL },
 ];
 
@@ -60,8 +59,13 @@ const Header = () => {
 
   return (
     <header className="header">
-      <Link className="header__wordmark" to="/" onClick={close} aria-label="Mercy Land — return to the world">
-        Mercy Land
+      <Link
+        className="header__wordmark"
+        to="/"
+        onClick={close}
+        aria-label="Thank God for Mercy Land — return to the world"
+      >
+        Thank God for Mercy Land
       </Link>
 
       {/* Desktop: inline items. Mobile: collapsed behind the toggle below. */}

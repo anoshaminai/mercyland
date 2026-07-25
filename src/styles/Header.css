@@ -22,7 +22,7 @@
 .header__wordmark {
   font-family: var(--header-wordmark-font);
   color: var(--header-wordmark-color);
-  font-size: 1.35rem;
+  font-size: var(--header-wordmark-size);
   line-height: 1;
   text-decoration: none;
   margin-right: auto; /* pushes the utility items to the right */
