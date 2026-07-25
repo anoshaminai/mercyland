@@ -16,7 +16,7 @@
 // exists; `scene.mobileZoom` + `scene.focal` are the knobs that make the wide source read well.
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import type { ReactNode } from 'react';
+import type { PointerEvent as ReactPointerEvent, ReactNode } from 'react';
 import { animate, motion, useMotionValue } from 'framer-motion';
 import type { Hotspot as HotspotData, Scene as SceneData, ScenePanel } from '../../types/world.types';
 import { resolveSceneAsset } from '../../lib/scene-assets';
@@ -100,11 +100,17 @@ export function Scene({ scene, onActivate, onBack, onReturnToStart, renderPanel 
     if (!aspect || !stage.w || !stage.h) return { boxW: stage.w, boxH: stage.h, canPan: false };
     const fillH = stage.h * aspect; // width the photo would have if it filled the stage height
     const containW = Math.min(stage.w, fillH);
-    if (!isPannableView) return { boxW: containW, boxH: containW / aspect, canPan: false };
+    if (!isPannableView) {
+      // `fit: 'cover'` — the box IS the stage and `object-fit: cover` crops the overflow, so the
+      // image runs edge-to-edge with no letterbox bands. Hotspot anchors stay normalized against
+      // this box, i.e. against the visible crop.
+      if (scene.fit === 'cover') return { boxW: stage.w, boxH: stage.h, canPan: false };
+      return { boxW: containW, boxH: containW / aspect, canPan: false };
+    }
     const coverW = Math.max(stage.w, fillH);
     const bw = Math.max(containW, coverW * (scene.mobileZoom ?? 1));
     return { boxW: bw, boxH: bw / aspect, canPan: bw > stage.w + 1 };
-  }, [aspect, stage.w, stage.h, isPannableView, scene.mobileZoom]);
+  }, [aspect, stage.w, stage.h, isPannableView, scene.mobileZoom, scene.fit]);
 
   // `panX` is the box's absolute left offset within the stage (the box is positioned top-left, so
   // centring is part of this number, not a separate CSS concern — mixing the two silently broke
@@ -124,6 +130,15 @@ export function Scene({ scene, onActivate, onBack, onReturnToStart, renderPanel 
         : Math.min(0, Math.max(stage.h - boxH, stage.h / 2 - boxH * scene.focal.y)),
     [boxH, stage.h, scene.focal.y],
   );
+
+  // Mobile marker mode (§5): hotspots render as bare markers and the first tap reveals the label
+  // rather than navigating. At most one label is open at a time — panning around should not
+  // accumulate a trail of open labels. Desktop keeps hover, so this never engages there.
+  const markerMode = scene.collapseLabelsOnMobile === true && isMobile;
+  const [revealedId, setRevealedId] = useState<string | null>(null);
+
+  // Any scene/mode change drops the open label — it belongs to the scene you left.
+  useEffect(() => setRevealedId(null), [scene.id, markerMode]);
 
   // Pan the viewport so a hotspot sits comfortably centered. Shared by focus-driven panning
   // (§5 accessibility floor) and edge-indicator taps. Never activates the hotspot.
@@ -151,6 +166,22 @@ export function Scene({ scene, onActivate, onBack, onReturnToStart, renderPanel 
     [canPan, boxW, panX, stage.w, panToHotspot],
   );
 
+  // First tap on a marker: open its label and pan it clear of the frame, so the label it just
+  // grew has room to be read instead of running off the edge (the clipping in the shipped build).
+  const handleReveal = useCallback(
+    (h: HotspotData) => {
+      setRevealedId(h.id);
+      panToHotspot(h);
+    },
+    [panToHotspot],
+  );
+
+  // Tapping the photo anywhere but on a hotspot closes the open label.
+  const dismissRevealed = useCallback((e: ReactPointerEvent) => {
+    if ((e.target as Element).closest('.hotspot')) return;
+    setRevealedId(null);
+  }, []);
+
   // Per-hotspot viewport state → drives edge indicators and the density-cap collapse.
   const rendered = useMemo(() => {
     return scene.hotspots.map((h) => {
@@ -175,8 +206,12 @@ export function Scene({ scene, onActivate, onBack, onReturnToStart, renderPanel 
   }, [rendered, canPan, scene.maxVisibleLabels]);
 
   return (
-    <section className="scene" aria-label={scene.title || scene.id}>
-      <div className="scene__stage" ref={stageRef}>
+    <section
+      className="scene"
+      aria-label={scene.title || scene.id}
+      style={scene.background ? { background: scene.background } : undefined}
+    >
+      <div className="scene__stage" ref={stageRef} onPointerDown={dismissRevealed}>
         {src ? (
           <motion.div
             className={`scene__box${canPan ? ' scene__box--pannable' : ''}`}
@@ -185,6 +220,7 @@ export function Scene({ scene, onActivate, onBack, onReturnToStart, renderPanel 
             dragConstraints={{ left: Math.min(0, stage.w - boxW), right: 0 }}
             dragElastic={0.04}
             dragMomentum={false}
+            onDragStart={() => setRevealedId(null)}
           >
             <img
               className="scene__img"
@@ -202,7 +238,14 @@ export function Scene({ scene, onActivate, onBack, onReturnToStart, renderPanel 
                 hotspot={h}
                 onActivate={onActivate}
                 onFocus={handleHotspotFocus}
-                collapsed={collapsedIds.has(h.id)}
+                // Marker mode supersedes the density cap — everything is already a marker, so the
+                // ONLY thing that expands a label is being the revealed one. Or-ing the two
+                // instead would leave a density-capped hotspot collapsed while revealed: first
+                // tap shows nothing, second tap navigates blind.
+                collapsed={markerMode ? revealedId !== h.id : collapsedIds.has(h.id)}
+                requireReveal={markerMode}
+                revealed={revealedId === h.id}
+                onReveal={handleReveal}
               />
             ))}
           </motion.div>

@@ -33,6 +33,9 @@ const scenes: Record<SceneId, Scene> = {
     focal: { x: 0.5, y: 0.55 },        // TODO tune: the point held centre-screen on mobile
     mobileZoom: 1,                     // cover-fit. 16:9 source on a phone ≈ 2.6 screens of pan
     maxVisibleLabels: 4,               // 7 hotspots → 3 lowest-priority become edge/panned
+    // 7 labels at once buried the photo on a phone (and the edge ones were clipped mid-word).
+    // Markers only; tap one to read it, tap again to go.
+    collapseLabelsOnMobile: true,
     hotspots: [
       { id: 'computer', label: 'use computer room', anchor: { x: 0.66, y: 0.5 }, priority: 1,
         target: { type: 'travel', sceneId: 'computer_room_void' } },
@@ -76,6 +79,9 @@ const scenes: Record<SceneId, Scene> = {
     focal: { x: 0.5, y: 0.55 },
     mobileZoom: 1,                    // cover-fit; hotspots reach the left edge, so keep the travel
     maxVisibleLabels: 4,
+    collapseLabelsOnMobile: true,     // same treatment as start_house: markers on mobile, tap to
+                                      // read, tap again to go
+
     hotspots: [
       { id: 'party', label: 'enter the party', anchor: { x: 0.5, y: 0.6 }, priority: 1,
         target: { type: 'overlay', content: 'summertimeVideo' } },
@@ -92,12 +98,16 @@ const scenes: Record<SceneId, Scene> = {
     title: 'Do you want to go home?',
     layout: 'static',
     imageWide: 'house_monster.png', // NOTE: rename asset from "house monster.png" (no space)
+    background: '#FFFFFF',          // the PNG is transparent — this colour IS the sky behind the
+                                    // clouds. On black the illustration read as a cut-out.
     focal: { x: 0.5, y: 0.5 },
     maxVisibleLabels: 4,
     hotspots: [
-      { id: 'gohome', label: 'go home', anchor: { x: 0.35, y: 0.8 }, priority: 1,
+      // Anchored to the drawing, not the grid: `go home` sits under the lead house's grin,
+      // `stay here` sits on the open door it is actually offering you.
+      { id: 'gohome', label: 'go home', anchor: { x: 0.35, y: 0.64 }, priority: 1,
         target: { type: 'overlay', content: 'monsterDenied' } },
-      { id: 'stay', label: 'stay here', anchor: { x: 0.65, y: 0.5 }, priority: 2, // inversion is the joke
+      { id: 'stay', label: 'stay here', anchor: { x: 0.8, y: 0.29 }, priority: 2, // inversion is the joke
         target: { type: 'travel', sceneId: 'start_house' } },
     ],
   },
@@ -107,8 +117,9 @@ const scenes: Record<SceneId, Scene> = {
     id: 'mailbox',
     title: 'Sign Up to Hear from Mercy Land',
     layout: 'static',
-    imageWide: 'hoops.png', 
-    imageTall: 'start_house_tall.png', // TODO wide portrait crop
+    imageWide: 'hoops.png',
+    fit: 'cover',                      // full-bleed photo — contain left it a thin band in a
+                                       // black field, which read as a broken image
     focal: { x: 0.5, y: 0.5 },
     hotspots: [],
     panel: { content: 'emailSignup' },
@@ -156,6 +167,8 @@ const scenes: Record<SceneId, Scene> = {
     title: '', // TODO
     layout: 'static',
     imageWide: 'flag.gif', // animated — loop + reduced-motion fallback (see BUILD.md)
+    fit: 'cover',          // the stripes ARE the backdrop: run them to all four edges rather than
+                           // floating a band of flag in black
     focal: { x: 0.5, y: 0.5 },
     hotspots: [],
     panel: { content: 'flagStatement' },

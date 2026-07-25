@@ -54,7 +54,7 @@ export function EmailSignup() {
   if (succeeded) {
     return (
       <p className="signup__success" role="status">
-        the void will call you soon
+        ttys
       </p>
     );
   }

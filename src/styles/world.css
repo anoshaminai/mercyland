@@ -54,7 +54,10 @@
   top: 0;
   left: 0;
 }
-.scene__box--pannable { cursor: grab; }
+/* `touch-action: none` — the horizontal drag is ours. Without it iOS Safari treats the same
+   gesture as a page scroll and walks the whole document sideways, which is what was clipping the
+   "T" off the wordmark and pushing the returns past the right edge. */
+.scene__box--pannable { cursor: grab; touch-action: none; }
 .scene__box--pannable:active { cursor: grabbing; }
 
 .scene__img {
@@ -166,7 +169,9 @@
   opacity: 0;
   transition: max-width 200ms ease, opacity 200ms ease, margin 200ms ease;
 }
-.hotspot--collapsed .hotspot__btn { padding: 8px; gap: 0; }
+/* justify-content: the button is `min-width: 44px` but its collapsed content is ~11px wide, so
+   without this the dot/arrow parks against the left padding instead of centring in the tap target. */
+.hotspot--collapsed .hotspot__btn { padding: 8px; gap: 0; justify-content: center; }
 .hotspot--collapsed .hotspot__btn::before {
   content: "";
   width: 6px;
@@ -181,6 +186,22 @@
   opacity: 1;
   margin-left: 6px;
 }
+
+/* Marker mode (mobile `collapseLabelsOnMobile`): the hotspot reads as a bare arrow — "something
+   is here" without spending a line of text on it. The arrow replaces the density-cap dot, and
+   unlike the hover cue it is always on, because touch has no hover to trigger it. */
+.hotspot--marker .hotspot__btn::before { display: none; }
+.hotspot--marker .hotspot__cue {
+  width: 0.7em;
+  opacity: 1;
+}
+/* Revealed marker: the label is showing, so signal that the NEXT tap commits by promoting it to
+   the same accent hover/focus already uses. */
+.hotspot--revealed .hotspot__btn {
+  background: var(--hotspot-hover-bg);
+  color: var(--hotspot-hover-color);
+}
+.hotspot--revealed .hotspot__ext { color: var(--hotspot-hover-color); }
 
 /* ── Edge indicator (mobile off-viewport affordance, spec §5) ─────────────── */
 /* Visual affordance for a hotspot outside the viewport. NOT a separate control:
@@ -221,7 +242,8 @@
 .scene__returns {
   position: absolute;
   left: 16px;
-  bottom: 16px;
+  /* Clear the iOS home indicator / Safari toolbar, which otherwise sits on top of these. */
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
   display: flex;
   gap: 10px;
   z-index: 5;

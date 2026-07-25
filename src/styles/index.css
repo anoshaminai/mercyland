@@ -25,6 +25,15 @@
 
 html {
   scroll-behavior: smooth;
+  /* Both elements, not just body: iOS Safari propagates body's overflow to the viewport only in
+     some configurations, so `overflow-x` on body alone still let the document walk sideways —
+     which shifted the whole fixed header left and clipped the "T" off the wordmark.
+     `clip` over `hidden` (with hidden as the fallback for older engines): hidden would make the
+     root a scroll container, which silently kills `position: sticky` on descendants — the flat
+     view's planned section nav. clip contains the overflow without that side effect. */
+  overflow-x: hidden;
+  overflow-x: clip;
+  overscroll-behavior-x: none;
 }
 
 :root {
@@ -112,9 +121,14 @@ html {
 body {
   margin: 0;
   min-width: 320px;
-  min-height: 100vh;
+  /* dvh, not vh: `100vh` is the LARGE viewport (toolbar hidden), so on iOS it made the document
+     taller than the visible area and scrolled `back` / `return to start` under Safari's toolbar.
+     .scene is sized in dvh — body has to agree or the page gains a phantom scroll. */
+  min-height: 100dvh;
   background-color: var(--color-mercy-black);
   overflow-x: hidden;
+  overflow-x: clip;
+  overscroll-behavior-x: none;
 }
 
 

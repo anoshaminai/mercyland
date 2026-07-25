@@ -23,12 +23,31 @@ export interface HotspotProps {
   /** Density-cap overflow: render as a compact marker that reveals its label on hover/focus.
    *  Still a full 44px focusable control; nothing is unmounted (§5). */
   collapsed?: boolean;
+  /** Touch two-step (§5, `collapseLabelsOnMobile`): the first activation only REVEALS the label,
+   *  the second navigates. Pointer devices get this for free from hover; touch has no hover, so
+   *  without it a bare marker is an unlabelled trapdoor — and for `external` targets that means
+   *  leaving the site on an accidental tap. */
+  requireReveal?: boolean;
+  /** Whether this hotspot is the currently revealed one (Scene owns the single-open invariant). */
+  revealed?: boolean;
+  /** Ask the Scene to reveal this hotspot (it also pans it clear of the viewport edge). */
+  onReveal?: (hotspot: HotspotData) => void;
   /** tabIndex passthrough (Scene sets authored list order via natural DOM order; default 0). */
 }
 
-export function Hotspot({ hotspot, onActivate, onFocus, collapsed }: HotspotProps) {
+export function Hotspot({
+  hotspot,
+  onActivate,
+  onFocus,
+  collapsed,
+  requireReveal,
+  revealed,
+  onReveal,
+}: HotspotProps) {
   const { label, anchor, offset, target } = hotspot;
   const isExternal = target.type === 'external';
+  // One tap short of navigating: show the label instead of firing the target.
+  const pendingReveal = requireReveal === true && revealed !== true;
 
   // Anchor is normalized 0–1 on the full scene image; the parent box is that image. Offset
   // (if any) nudges the label in the same normalized space.
@@ -37,7 +56,14 @@ export function Hotspot({ hotspot, onActivate, onFocus, collapsed }: HotspotProp
     top: `${(anchor.y + (offset?.y ?? 0)) * 100}%`,
   };
 
-  const className = `hotspot${collapsed ? ' hotspot--collapsed' : ''}`;
+  const className = [
+    'hotspot',
+    collapsed ? 'hotspot--collapsed' : '',
+    requireReveal ? 'hotspot--marker' : '',
+    revealed ? 'hotspot--revealed' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   const inner = (
     <>
@@ -53,6 +79,13 @@ export function Hotspot({ hotspot, onActivate, onFocus, collapsed }: HotspotProp
   // Locked hotspots are reserved for future gating (§2) — default no-op: render, but inert.
   const disabled = hotspot.locked === true;
 
+  // Should this activation only reveal the label? Keyboard activation (Enter/Space) reports
+  // `detail === 0`, and CSS already reveals the label on :focus-visible — so a keyboard user has
+  // read the label by the time they press Enter and must not be made to press it twice. Only
+  // real pointer/touch taps pay the two-step. Deciding here, off the event, also sidesteps the
+  // focus→click race on touch (focus fires first and would otherwise mark it already revealed).
+  const shouldRevealOnly = (e: { detail: number }) => pendingReveal && e.detail !== 0;
+
   if (isExternal && target.type === 'external') {
     return (
       <div className={className} style={style}>
@@ -64,6 +97,12 @@ export function Hotspot({ hotspot, onActivate, onFocus, collapsed }: HotspotProp
           aria-label={`${label} (opens in a new tab)`}
           aria-disabled={disabled || undefined}
           onFocus={() => onFocus?.(hotspot)}
+          onClick={(e) => {
+            if (shouldRevealOnly(e)) {
+              e.preventDefault();
+              onReveal?.(hotspot);
+            }
+          }}
         >
           {inner}
         </a>
@@ -78,7 +117,13 @@ export function Hotspot({ hotspot, onActivate, onFocus, collapsed }: HotspotProp
         className="hotspot__btn"
         aria-label={label}
         disabled={disabled}
-        onClick={() => onActivate(hotspot)}
+        onClick={(e) => {
+          if (shouldRevealOnly(e)) {
+            onReveal?.(hotspot);
+            return;
+          }
+          onActivate(hotspot);
+        }}
         onFocus={() => onFocus?.(hotspot)}
       >
         {inner}
