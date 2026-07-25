@@ -1,30 +1,13 @@
 import type { VoidObject } from '../types/void';
 
-const touchingSrc = new URL('../assets/images/band/parking lot touching.jpg', import.meta.url).href;
-
 export const chatMessages: VoidObject[] = [
   {
     id: 'note-welcome',
     content: {
       type: 'text',
-      title: 'Hi!',
-      body: "i did it all for you <3 i wrote this song for you <3",
-    },
-  },
-  {
-    id: 'note-image',
-    content: {
-      type: 'image',
-      src: touchingSrc,
-      alt: 'when it all turned blue',
-    },
-  },
-  {
-    id: 'note-video',
-    content: {
-      type: 'video',
-      youtubeId: 'bbNxduOX9U4',
-      title: 'April 30',
+      title: 'LJ',
+      body: `I wish I didn’t have to reach out to you this way, but we’ve run out of time. You need to come with me. Follow my instructions and they won’t get to you.
+-t`,
     },
   },
 ];

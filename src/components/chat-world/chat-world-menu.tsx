@@ -23,7 +23,7 @@ export const ChatWorldMenu = () => {
       label: 'explore',
       topPct: 37,
       heightPct: 21,
-      onClick: () => navigate('/explore'),
+      onClick: () => window.open(TERMITES_FILM_URL, '_blank', 'noopener,noreferrer'),
     },
     {
       label: 'learn more',

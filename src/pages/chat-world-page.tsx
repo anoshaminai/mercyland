@@ -50,7 +50,7 @@ export const ChatWorldPage = () => {
         />
         <VoidPostFX />
       </Canvas>
-      <LoadingOverlay />
+      <LoadingOverlay label="entering chat world…" />
       <AnimatePresence>
         {selected && (
           <ChatMessageDetail content={selected.content} onClose={() => setSelected(null)} />

@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Canvas } from '@react-three/fiber';
 import { AnimatePresence } from 'framer-motion';
 import { SceneControls } from '../components/shared/scene-controls';
@@ -52,6 +52,14 @@ export const VoidPage = () => {
         <VoidPostFX />
       </Canvas>
       <LoadingOverlay />
+      {/* Explicit way out of the scene — the Header wordmark also returns to `/`, but reads
+          as a logo, not an exit. Sits above the canvas, below ObjectDetail (z-50). */}
+      <Link
+        to="/"
+        className="fixed bottom-6 left-6 z-40 text-mercy-white/60 font-primary text-sm hover:text-mercy-white transition-colors"
+      >
+        ← back to the world
+      </Link>
       <AnimatePresence>
         {selected && (
           <ObjectDetail content={selected.content} onClose={() => setSelected(null)} />

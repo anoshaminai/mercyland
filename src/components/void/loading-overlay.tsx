@@ -1,6 +1,6 @@
 import { useVideoReady } from '../../lib/video-ready-store';
 
-export const LoadingOverlay = () => {
+export const LoadingOverlay = ({ label = 'entering the void…' }: { label?: string }) => {
   const ready = useVideoReady();
 
   return (
@@ -10,7 +10,7 @@ export const LoadingOverlay = () => {
       }`}
     >
       <span className="font-display text-mercy-white/70 text-4xl tracking-wider">
-        entering the void…
+        {label}
       </span>
     </div>
   );

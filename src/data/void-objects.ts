@@ -8,8 +8,6 @@ const wtlgo = new URL('../assets/images/cover art/wtlgo cover art.jpg', import.m
 const route42Art = new URL('../assets/images/cover art/Rt42 cover art.jpg', import.meta.url).href;
 
 const chatWorldLogoSrc = new URL('../assets/images/chat_world/chatworld-logo.png', import.meta.url).href;
-const runSrc = new URL('../assets/images/band/parking lot wide run.jpg', import.meta.url).href;
-const stairsSrc = new URL('../assets/images/band/stairs vertical 1.jpg', import.meta.url).href;
 
 // `model` pins a specific .glb (bare filename, no extension) to this object.
 // Objects without `model` get any leftover .glb shuffled in from the pool.
@@ -128,22 +126,6 @@ const allVoidObjects: VoidObject[] = [
       type: 'link',
       label: 'Bandcamp',
       url: 'https://thankgodformercyland.bandcamp.com',
-    },
-  },
-  {
-    id: 'run',
-    content: {
-      type: 'image',
-      src: runSrc,
-      alt: 'run run run',
-    },
-  },
-  {
-    id: 'stairs',
-    content: {
-      type: 'image',
-      src: stairsSrc,
-      alt: 'look up',
     },
   },
   {
