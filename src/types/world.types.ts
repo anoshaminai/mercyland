@@ -58,10 +58,23 @@ export interface ScenePanel {
   props?: Record<string, unknown>;
 }
 
+/** How a `static` scene's image sits in the stage.
+ *  contain → the whole image, letterboxed against the scene background (the default).
+ *  cover   → the image fills the stage edge-to-edge, cropping the overflow. Use when the
+ *            backdrop IS the content (flag_void's stripes, the mailbox photo) and letterbox
+ *            bands would read as dead space. Ignored on `pannable` (which is cover by nature). */
+export type SceneFit = 'contain' | 'cover';
+
 export interface Scene {
   id: SceneId;
   title: string;
   layout: SceneLayout;
+  fit?: SceneFit;            // `static` only; default 'contain'
+  background?: string;       // scene backdrop behind/around the image; default --color-mercy-black.
+                             // Matters for transparent PNGs, where this colour IS the sky.
+  collapseLabelsOnMobile?: boolean; // mobile: render hotspots as bare markers; first tap reveals
+                                    // the label (and pans it into view), second tap activates.
+                                    // For dense scenes where 7 labels at once is noise (§5).
   imageWide: string;         // filename in assets/images/scenes/, resolved by the loader (see BUILD.md)
   imageTall?: string;        // OPTIONAL taller crop preferred on mobile `pannable` scenes. Not a
                              // prerequisite for panning — without it mobile cover-fits `imageWide`.

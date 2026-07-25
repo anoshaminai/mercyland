@@ -9,7 +9,7 @@ const EmailSignup = () => {
   if (state.succeeded) {
     return (
       <div className="flex justify-center items-center bg-mercy-blue border border-mercy-red max-w-[500px] mx-auto">
-        <span className="text-mercy-green font-primary px-4 py-1 text-center">the void will call you soon</span>
+        <span className="text-mercy-green font-primary px-4 py-1 text-center">ttys</span>
       </div>
     );
   }
