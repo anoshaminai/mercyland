@@ -28,7 +28,7 @@ export const ljMessages: Record<string, string[]> = {
     'TODO — LJ message(s) shown in the void room',
   ],
   chat: [
-    'TODO — LJ message(s) shown in the chat-world room',
+    "hi! It's nice to see someone in here for once. I was just on Chat World, wanna see?",
   ],
 };
 
