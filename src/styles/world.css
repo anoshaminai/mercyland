@@ -93,6 +93,11 @@
   transform: translate(-50%, -50%);
   z-index: 2;
 }
+/* Near a frame edge the centred label would run outside .scene__stage (overflow: hidden) and get
+   sliced — "explore the ne". Grow it inward instead. Set by Scene from the hotspot's measured
+   screen x; order matters here, these must follow .hotspot to win at equal specificity. */
+.hotspot--anchor-left { transform: translate(0, -50%); }
+.hotspot--anchor-right { transform: translate(-100%, -50%); }
 
 .hotspot__btn {
   display: inline-flex;
@@ -205,8 +210,9 @@
 
 /* ── Edge indicator (mobile off-viewport affordance, spec §5) ─────────────── */
 /* Visual affordance for a hotspot outside the viewport. NOT a separate control:
-   aria-hidden + not in tab order. Tapping PANS the scene (does not activate). The real
-   focusable hotspot button stays in the DOM at its anchored (off-screen) position. */
+   aria-hidden + not in tab order. Tapping SUMMONS the hotspot — pans it into view and leaves its
+   label revealed — but does not activate it; one further tap commits. The real focusable hotspot
+   button stays in the DOM at its anchored (off-screen) position. */
 .edge-indicator {
   position: absolute;
   display: inline-flex;
@@ -276,14 +282,19 @@
 
 /* ── Scene panel (persistent content host, spec §4/§5) ────────────────────── */
 /* Fixed foreground above the photo; never panned off-screen, never overlaps the thumb zone. */
+/* Anchored to the bottom, above the thumb-zone returns — NOT centred. Dead-centre put the panel
+   on the exact point hotspots cluster around (a hotspot at anchor 0.5/0.5 sat underneath it), and
+   on mobile it was worse: `static` scenes contain-fit, so a landscape photo letterboxes to a band
+   across the middle of the stage — precisely where a centred panel lands. Bottom-anchoring keeps
+   the photo and its hotspots clear at every viewport width. */
 .scene__panel {
   position: absolute;
   left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
   max-width: min(92vw, var(--overlay-max-width, 640px));
   width: 100%;
-  max-height: calc(100% - 140px);
+  max-height: calc(100% - 200px);
   overflow-y: auto;
   padding: 20px;
   border-radius: var(--scene-panel-radius);

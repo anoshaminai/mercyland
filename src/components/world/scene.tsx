@@ -26,6 +26,8 @@ import '../../styles/world.css';
 
 const MOBILE_QUERY = '(max-width: 640px)';
 const EDGE_MARGIN = 28; // px inside the frame before a hotspot counts as off-viewport
+const LABEL_SAFE_ZONE = 120; // px from a frame edge within which a centred label would clip
+const EDGE_STACK_GAP = 48; // px minimum vertical spacing between stacked edge indicators
 
 export interface SceneProps {
   scene: SceneData;
@@ -182,15 +184,50 @@ export function Scene({ scene, onActivate, onBack, onReturnToStart, renderPanel 
     setRevealedId(null);
   }, []);
 
-  // Per-hotspot viewport state → drives edge indicators and the density-cap collapse.
+  // Per-hotspot viewport state → drives edge indicators, the density-cap collapse, and which way
+  // a near-edge label has to grow. `panXState` is the box's absolute left offset, so `screenX`
+  // is valid for static scenes too — only `off` is gated on being pannable, because a scene that
+  // cannot pan has no edge indicators.
   const rendered = useMemo(() => {
     return scene.hotspots.map((h) => {
-      const screenX = canPan ? boxW * h.anchor.x + panXState : null;
-      const offLeft = screenX !== null && screenX < EDGE_MARGIN;
-      const offRight = screenX !== null && screenX > stage.w - EDGE_MARGIN;
-      return { h, off: offLeft || offRight, side: offLeft ? ('left' as const) : ('right' as const) };
+      const screenX = boxW * h.anchor.x + panXState;
+      const offLeft = canPan && screenX < EDGE_MARGIN;
+      const offRight = canPan && screenX > stage.w - EDGE_MARGIN;
+      const off = offLeft || offRight;
+      let anchorSide: 'left' | 'right' | null = null;
+      if (!off && stage.w) {
+        if (screenX < LABEL_SAFE_ZONE) anchorSide = 'left';
+        else if (screenX > stage.w - LABEL_SAFE_ZONE) anchorSide = 'right';
+      }
+      return { h, off, side: offLeft ? ('left' as const) : ('right' as const), anchorSide };
     });
   }, [scene.hotspots, canPan, boxW, panXState, stage.w]);
+
+  // Edge indicators (§5): parked per side, ordered by anchor, de-overlapped, density-capped.
+  // Without the de-overlap two hotspots with similar `anchor.y` render on top of each other;
+  // without the cap a busy scene rings its own frame with them.
+  const edgeIndicators = useMemo(() => {
+    if (!canPan) return [];
+    const cap = scene.maxVisibleLabels;
+    const out: { h: HotspotData; side: 'left' | 'right'; top: number }[] = [];
+    const lo = 30;
+    const hi = Math.max(stage.h - 30, 30);
+    for (const side of ['left', 'right'] as const) {
+      const group = rendered.filter((r) => r.off && r.side === side);
+      // Which ones survive is by priority; where they sit is by anchor.
+      const kept = cap
+        ? [...group].sort((a, b) => (a.h.priority ?? 99) - (b.h.priority ?? 99)).slice(0, cap)
+        : group;
+      const ordered = [...kept].sort((a, b) => a.h.anchor.y - b.h.anchor.y);
+      let prev = -Infinity;
+      for (const r of ordered) {
+        const top = Math.min(Math.max(r.h.anchor.y * boxH + offsetY, prev + EDGE_STACK_GAP, lo), hi);
+        prev = top;
+        out.push({ h: r.h, side, top });
+      }
+    }
+    return out;
+  }, [canPan, rendered, boxH, offsetY, stage.h, scene.maxVisibleLabels]);
 
   // Density cap (§5): among hotspots currently in the viewport, keep only the highest-priority
   // `maxVisibleLabels` as full labels; the rest collapse to markers (still focusable). Mobile only.
@@ -232,10 +269,11 @@ export function Scene({ scene, onActivate, onBack, onReturnToStart, renderPanel 
                 if (img.naturalHeight) setAspect(img.naturalWidth / img.naturalHeight);
               }}
             />
-            {scene.hotspots.map((h) => (
+            {rendered.map(({ h, anchorSide }) => (
               <Hotspot
                 key={h.id}
                 hotspot={h}
+                anchorSide={anchorSide}
                 onActivate={onActivate}
                 onFocus={handleHotspotFocus}
                 // Marker mode supersedes the density cap — everything is already a marker, so the
@@ -256,18 +294,17 @@ export function Scene({ scene, onActivate, onBack, onReturnToStart, renderPanel 
 
         {/* Edge indicators live in the (un-panned) stage, parked at the frame. aria-hidden —
             the real hotspot buttons above are the accessible controls. */}
-        {canPan &&
-          rendered
-            .filter((r) => r.off)
-            .map((r) => (
-              <EdgeIndicator
-                key={`edge-${r.h.id}`}
-                hotspot={r.h}
-                side={r.side}
-                top={Math.min(Math.max(r.h.anchor.y * boxH + offsetY, 30), Math.max(stage.h - 30, 30))}
-                onPan={panToHotspot}
-              />
-            ))}
+        {edgeIndicators.map((r) => (
+          <EdgeIndicator
+            key={`edge-${r.h.id}`}
+            hotspot={r.h}
+            side={r.side}
+            top={r.top}
+            // Summon, not just pan: carry the label across so the hotspot you tapped does not
+            // land as an anonymous marker (see edge-indicator.tsx). Still never activates.
+            onSummon={handleReveal}
+          />
+        ))}
       </div>
 
       {/* Decorative frame + corner dots (cosmetic; never intercepts pointers). */}

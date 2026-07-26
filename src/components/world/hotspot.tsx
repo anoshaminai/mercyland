@@ -32,6 +32,11 @@ export interface HotspotProps {
   revealed?: boolean;
   /** Ask the Scene to reveal this hotspot (it also pans it clear of the viewport edge). */
   onReveal?: (hotspot: HotspotData) => void;
+  /** Set by the Scene when this hotspot sits within a label's width of a frame edge, so the
+   *  label grows INWARD instead of being centred and clipped by the stage's overflow. Panning
+   *  cannot solve this on its own: a hotspot near the image's own extreme edge (e.g. anchor.x
+   *  0.06) can never be centred, because the pan clamp bottoms out first. */
+  anchorSide?: 'left' | 'right' | null;
   /** tabIndex passthrough (Scene sets authored list order via natural DOM order; default 0). */
 }
 
@@ -43,6 +48,7 @@ export function Hotspot({
   requireReveal,
   revealed,
   onReveal,
+  anchorSide,
 }: HotspotProps) {
   const { label, anchor, offset, target } = hotspot;
   const isExternal = target.type === 'external';
@@ -61,6 +67,7 @@ export function Hotspot({
     collapsed ? 'hotspot--collapsed' : '',
     requireReveal ? 'hotspot--marker' : '',
     revealed ? 'hotspot--revealed' : '',
+    anchorSide ? `hotspot--anchor-${anchorSide}` : '',
   ]
     .filter(Boolean)
     .join(' ');
