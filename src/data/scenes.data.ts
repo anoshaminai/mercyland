@@ -130,17 +130,17 @@ const scenes: Record<SceneId, Scene> = {
     id: 'computer_room_void',
     title: '', // TODO
     layout: 'static',
-    imageWide: 'void.jpg',
+    imageWide: 'void_horizontal.jpeg',
+    imageTall: 'void.jpg',
     focal: { x: 0.5, y: 0.5 },
     maxVisibleLabels: 4,
     hotspots: [
       { id: 'void', label: 'look at void', anchor: { x: 0.5, y: 0.5 }, priority: 1,
         target: { type: 'enter', route: '/void' } },
-      // Issue 1 fix — re-added path to chat world, anchored to the (pink) lava lamp:
-      { id: 'pinkthing', label: "what's that pink thing?", anchor: { x: 0.8, y: 0.6 }, priority: 2,
+      // Issue 1 fix — the path to chat world, anchored on the chair back (bottom right).
+      { id: 'sit', label: 'sit in chair', anchor: { x: 0.86, y: 0.78 }, priority: 2,
         target: { type: 'travel', sceneId: 'computer_room_chat_world' } },
     ],
-    panel: { content: 'ljConversation', props: { messageKey: 'void' } },
   },
 
   computer_room_chat_world: {
@@ -151,12 +151,13 @@ const scenes: Record<SceneId, Scene> = {
     focal: { x: 0.5, y: 0.5 },
     maxVisibleLabels: 4,
     hotspots: [
-      { id: 'chat', label: 'open chat world', anchor: { x: 0.5, y: 0.5 }, priority: 1,
+      // On the monitor screen. Was y:0.5, which landed exactly under the scene panel back when
+      // .scene__panel was centred; the panel is bottom-anchored now, but on the screen is where
+      // this belongs anyway.
+      { id: 'chat', label: 'open chat world', anchor: { x: 0.51, y: 0.32 }, priority: 1,
         target: { type: 'enter', route: '/chat-world' } },
       { id: 'void', label: 'look at void instead', anchor: { x: 0.78, y: 0.55 }, priority: 2,
         target: { type: 'enter', route: '/void' } },
-      { id: 'imgood', label: 'im good', anchor: { x: 0.5, y: 0.85 }, priority: 3,
-        target: { type: 'travel', sceneId: 'start_house' } },
     ],
     panel: { content: 'ljConversation', props: { messageKey: 'chat' } },
   },
