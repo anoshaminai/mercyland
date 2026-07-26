@@ -5,9 +5,17 @@ export const chatMessages: VoidObject[] = [
     id: 'note-welcome',
     content: {
       type: 'text',
-      title: 'LJ',
+      title: 'hi,',
       body: `I wish I didn’t have to reach out to you this way, but we’ve run out of time. You need to come with me. Follow my instructions and they won’t get to you.
 -t`,
+    },
+  },
+  {
+    id: 'note-stuck',
+    content: {
+      type: 'text',
+      title: 'step 1',
+      body: `if you see this, comment 'help im stuck' on my most recent instagram post and ill send you something`,
     },
   },
 ];

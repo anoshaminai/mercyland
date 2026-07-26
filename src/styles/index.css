@@ -66,11 +66,13 @@ html {
   --pan-duration: 420ms;
   --pan-ease: cubic-bezier(0.22, 1, 0.36, 1); /* easeOutCubic */
 
-  /* Frame chrome */
-  --frame-color: #5b9bd5;
-  --frame-width: 3px;                        /* thins on mobile */
-  --frame-width-mobile: 2px;
-  --frame-corner-size: 14px;                 /* corner-dot treatment */
+  /* Frame chrome — OFF. The blue border + corner dots boxed every scene photo in; the photo
+     should meet the viewport edge. Zeroed rather than deleted so the .scene__frame primitive
+     stays available: give these values back and the treatment returns, no markup change. */
+  --frame-color: transparent;
+  --frame-width: 0px;                        /* thins on mobile */
+  --frame-width-mobile: 0px;
+  --frame-corner-size: 0px;                  /* corner-dot treatment */
 
   /* Scene title (the `well` blackletter) */
   --scene-title-font: var(--font-display);
