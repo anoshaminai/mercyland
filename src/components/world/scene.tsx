@@ -27,7 +27,12 @@ import '../../styles/world.css';
 const MOBILE_QUERY = '(max-width: 640px)';
 const EDGE_MARGIN = 28; // px inside the frame before a hotspot counts as off-viewport
 const LABEL_SAFE_ZONE = 120; // px from a frame edge within which a centred label would clip
-const EDGE_STACK_GAP = 48; // px minimum vertical spacing between stacked edge indicators
+const EDGE_STACK_GAP = 48; // px between stacked edge indicators — keep >= --hotspot-tap-min (44)
+const EDGE_STACK_INSET = 30; // px the stack keeps clear of the top/bottom frame
+
+/** Density-cap ranking (§5): lower `priority` wins. Shared by the in-frame collapse and the edge
+ *  stack so the two halves of one budget can never drift apart. */
+const byPriority = (a: HotspotData, b: HotspotData) => (a.priority ?? 99) - (b.priority ?? 99);
 
 export interface SceneProps {
   scene: SceneData;
@@ -209,24 +214,24 @@ export function Scene({ scene, onActivate, onBack, onReturnToStart, renderPanel 
   const edgeIndicators = useMemo(() => {
     if (!canPan) return [];
     const cap = scene.maxVisibleLabels;
-    const out: { h: HotspotData; side: 'left' | 'right'; top: number }[] = [];
-    const lo = 30;
-    const hi = Math.max(stage.h - 30, 30);
-    for (const side of ['left', 'right'] as const) {
-      const group = rendered.filter((r) => r.off && r.side === side);
-      // Which ones survive is by priority; where they sit is by anchor.
-      const kept = cap
-        ? [...group].sort((a, b) => (a.h.priority ?? 99) - (b.h.priority ?? 99)).slice(0, cap)
-        : group;
-      const ordered = [...kept].sort((a, b) => a.h.anchor.y - b.h.anchor.y);
+    // ONE budget across both sides. Capping per side would let a `cap: 4` scene park 8 indicators
+    // around the frame — exactly the ringing the cap exists to prevent (§5). Which ones survive is
+    // by priority; where they sit is by anchor.
+    const all = rendered.filter((r) => r.off);
+    const kept = cap && all.length > cap ? all.sort((a, b) => byPriority(a.h, b.h)).slice(0, cap) : all;
+    const hi = Math.max(stage.h - EDGE_STACK_INSET, EDGE_STACK_INSET);
+    return (['left', 'right'] as const).flatMap((side) => {
       let prev = -Infinity;
-      for (const r of ordered) {
-        const top = Math.min(Math.max(r.h.anchor.y * boxH + offsetY, prev + EDGE_STACK_GAP, lo), hi);
-        prev = top;
-        out.push({ h: r.h, side, top });
-      }
-    }
-    return out;
+      return kept
+        .filter((r) => r.side === side)
+        .sort((a, b) => a.h.anchor.y - b.h.anchor.y)
+        .map((r) => {
+          const ideal = r.h.anchor.y * boxH + offsetY;
+          const top = Math.min(Math.max(ideal, prev + EDGE_STACK_GAP, EDGE_STACK_INSET), hi);
+          prev = top;
+          return { h: r.h, side, top };
+        });
+    });
   }, [canPan, rendered, boxH, offsetY, stage.h, scene.maxVisibleLabels]);
 
   // Density cap (§5): among hotspots currently in the viewport, keep only the highest-priority
@@ -236,10 +241,7 @@ export function Scene({ scene, onActivate, onBack, onReturnToStart, renderPanel 
     if (!canPan || !cap) return new Set<string>();
     const inView = rendered.filter((r) => !r.off).map((r) => r.h);
     if (inView.length <= cap) return new Set<string>();
-    const overflow = [...inView]
-      .sort((a, b) => (a.priority ?? 99) - (b.priority ?? 99))
-      .slice(cap);
-    return new Set(overflow.map((h) => h.id));
+    return new Set(inView.sort(byPriority).slice(cap).map((h) => h.id));
   }, [rendered, canPan, scene.maxVisibleLabels]);
 
   return (
@@ -276,11 +278,10 @@ export function Scene({ scene, onActivate, onBack, onReturnToStart, renderPanel 
                 anchorSide={anchorSide}
                 onActivate={onActivate}
                 onFocus={handleHotspotFocus}
-                // Marker mode supersedes the density cap — everything is already a marker, so the
-                // ONLY thing that expands a label is being the revealed one. Or-ing the two
-                // instead would leave a density-capped hotspot collapsed while revealed: first
-                // tap shows nothing, second tap navigates blind.
-                collapsed={markerMode ? revealedId !== h.id : collapsedIds.has(h.id)}
+                // Revealed always wins over BOTH suppression mechanisms. Letting either one keep
+                // a revealed hotspot collapsed means the first tap shows nothing and the second
+                // navigates blind — which is the bug the edge-indicator summon exists to fix.
+                collapsed={revealedId !== h.id && (markerMode || collapsedIds.has(h.id))}
                 requireReveal={markerMode}
                 revealed={revealedId === h.id}
                 onReveal={handleReveal}
@@ -300,8 +301,7 @@ export function Scene({ scene, onActivate, onBack, onReturnToStart, renderPanel 
             hotspot={r.h}
             side={r.side}
             top={r.top}
-            // Summon, not just pan: carry the label across so the hotspot you tapped does not
-            // land as an anonymous marker (see edge-indicator.tsx). Still never activates.
+            // Summon, not just pan — see edge-indicator.tsx.
             onSummon={handleReveal}
           />
         ))}
