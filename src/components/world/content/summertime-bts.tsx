@@ -23,7 +23,7 @@ export function SummertimeBTS(props: Record<string, unknown>) {
         <div className="gallery__stage">
           <div className="embed-media__load" aria-hidden="true">
             <span className="embed-media__play">◵</span>
-            <span>photos coming soon</span>
+            <span>coming soon</span>
           </div>
         </div>
       </div>

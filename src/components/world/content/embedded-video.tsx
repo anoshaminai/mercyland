@@ -22,7 +22,7 @@ export function EmbeddedVideo({ youtubeId, title }: EmbeddedVideoProps) {
       <div className="embed-media">
         <div className="embed-media__load" aria-hidden="true">
           <span className="embed-media__play">◵</span>
-          <span>video coming soon</span>
+          <span>coming soon</span>
         </div>
       </div>
     );

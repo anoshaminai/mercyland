@@ -5,10 +5,11 @@ export const TERMITES_FILM_URL = 'https://www.youtube.com/watch?v=SINykiniIZg';
 export const PRESS_ARTICLE_URL = 'https://officemagazine.net/mercy-land-drops-their-control-remix';
 export const MERCH_URL = 'https://thankgodformercyland.bandcamp.com/merch';
 export const LISTEN_URL = 'https://thankgodformercyland.bandcamp.com/music';
+export const TIKTOK_URL = 'https://www.tiktok.com/@thankgodformercyland';
 
 export const SOCIAL_LINKS = [
   { label: 'Spotify', href: 'https://open.spotify.com/artist/4AIE1Qqj2sHsiMavHGEAWx?si=ZHM6MfMrT2azlhGCp49WCA' },
   { label: 'Instagram', href: 'https://www.instagram.com/thankgodformercyland/' },
-  { label: 'TikTok', href: 'https://www.tiktok.com/@thankgodformercyland' },
+  { label: 'TikTok', href: TIKTOK_URL },
   { label: 'Merch', href: MERCH_URL },
 ] as const;

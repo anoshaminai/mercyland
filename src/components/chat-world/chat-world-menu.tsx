@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import menuSrc from '../../assets/images/chat_world/chatworld-menu.png';
-import { TERMITES_FILM_URL } from '../../data/links';
+import { TERMITES_FILM_URL, TIKTOK_URL } from '../../data/links';
 
 type Hotspot = {
   label: string;
@@ -23,7 +23,7 @@ export const ChatWorldMenu = () => {
       label: 'explore',
       topPct: 37,
       heightPct: 21,
-      onClick: () => window.open(TERMITES_FILM_URL, '_blank', 'noopener,noreferrer'),
+      onClick: () => window.open(TIKTOK_URL, '_blank', 'noopener,noreferrer'),
     },
     {
       label: 'learn more',
