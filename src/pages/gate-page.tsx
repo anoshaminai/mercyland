@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm, ValidationError } from '@formspree/react';
 import { useChatWorldAccess } from '../hooks/useChatWorldAccess';
 import { useEmailField } from '../hooks/useEmailField';
+import { track } from '../lib/analytics';
 
 export const GatePage = () => {
   const navigate = useNavigate();
@@ -15,8 +16,16 @@ export const GatePage = () => {
     if (hasAccess && !state.succeeded) navigate('/chat-world', { replace: true });
   }, [hasAccess, state.succeeded, navigate]);
 
+  // Analytics: success only, no address (specs/analytics.md). Ref-guarded — this effect's deps
+  // include identities that can change, and StrictMode double-invokes it in dev.
+  const firedSubmit = useRef(false);
+
   useEffect(() => {
     if (state.succeeded) {
+      if (!firedSubmit.current) {
+        firedSubmit.current = true;
+        track('email_submit', { source: 'gate' });
+      }
       grantAccess(email);
       const t = window.setTimeout(() => navigate('/chat-world'), 800);
       return () => window.clearTimeout(t);

@@ -1,10 +1,21 @@
+import { useEffect, useRef } from 'react';
 import { useForm, ValidationError } from '@formspree/react';
 import { useEmailField } from '../hooks/useEmailField';
+import { track } from '../lib/analytics';
 
 const EmailSignup = () => {
   const [state, handleSubmit] = useForm("mldnjygq");
   const { email, error, suggestion, inputRef, onChange, onSubmit, applySuggestion } =
     useEmailField('', handleSubmit);
+
+  // Analytics: success only, no address (specs/analytics.md). Ref-guarded — this effect re-runs
+  // on unrelated re-renders and StrictMode double-invokes it in dev.
+  const firedSubmit = useRef(false);
+  useEffect(() => {
+    if (!state.succeeded || firedSubmit.current) return;
+    firedSubmit.current = true;
+    track('email_submit', { source: 'flat' });
+  }, [state.succeeded]);
 
   if (state.succeeded) {
     return (

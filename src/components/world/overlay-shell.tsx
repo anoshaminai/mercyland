@@ -8,6 +8,8 @@
 import { useCallback, useEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
+import type { ContentId, SceneId } from '../../types/world.types';
+import { useTrackOnce } from '../../hooks/use-track-once';
 import '../../styles/world.css';
 
 const FOCUSABLE =
@@ -16,11 +18,16 @@ const FOCUSABLE =
 export interface OverlayShellProps {
   onClose: () => void;
   children: ReactNode;
-  /** Accessible name for the dialog. */
-  label?: string;
+  /** The content being shown. Doubles as the dialog's accessible name and the analytics label. */
+  content: ContentId;
+  /** The scene the overlay was opened from (analytics — which room leads to which media). */
+  scene: SceneId;
 }
 
-export function OverlayShell({ onClose, children, label }: OverlayShellProps) {
+export function OverlayShell({ onClose, children, content, scene }: OverlayShellProps) {
+  // Analytics: the shell is mounted ONLY while open, so mount == open (specs/analytics.md).
+  useTrackOnce('overlay_open', { scene, content }, `${scene}:${content}`);
+
   const panelRef = useRef<HTMLDivElement>(null);
   const dismissRef = useRef<HTMLButtonElement>(null);
 
@@ -83,7 +90,7 @@ export function OverlayShell({ onClose, children, label }: OverlayShellProps) {
         className="overlay__panel"
         role="dialog"
         aria-modal="true"
-        aria-label={label}
+        aria-label={content}
         onKeyDown={onKeyDown}
       >
         <button

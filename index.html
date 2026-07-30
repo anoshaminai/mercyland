@@ -13,6 +13,12 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" />
     <link rel="stylesheet" href="https://use.typekit.net/day4ecd.css" />
     <title>Mercy Land</title>
+    <!-- Analytics (specs/analytics.md). Cookieless Umami; no consent banner. Both values are
+         substituted from env at build time and live in the Render dashboard (see .env.example).
+         They are intentionally unset in local dev: the script then fails to load, window.umami
+         stays undefined, and src/lib/analytics.ts degrades to a console log — so the two "not
+         defined in env variables" warnings below are expected here and only here. -->
+    <script defer src="%VITE_UMAMI_SRC%" data-website-id="%VITE_UMAMI_ID%"></script>
   </head>
   <body>
     <div id="root"></div>

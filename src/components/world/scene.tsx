@@ -20,6 +20,7 @@ import type { PointerEvent as ReactPointerEvent, ReactNode } from 'react';
 import { animate, motion, useMotionValue } from 'framer-motion';
 import type { Hotspot as HotspotData, Scene as SceneData, ScenePanel } from '../../types/world.types';
 import { resolveSceneAsset } from '../../lib/scene-assets';
+import { useTrackOnce } from '../../hooks/use-track-once';
 import { Hotspot } from './hotspot';
 import { EdgeIndicator } from './edge-indicator';
 import '../../styles/world.css';
@@ -36,7 +37,8 @@ const byPriority = (a: HotspotData, b: HotspotData) => (a.priority ?? 99) - (b.p
 
 export interface SceneProps {
   scene: SceneData;
-  /** A hotspot fired one of the non-external target types. The host owns what each does. */
+  /** A hotspot was activated. The host owns what each target type does — note `external` reports
+   *  here too but has already navigated itself (see Hotspot). */
   onActivate: (hotspot: HotspotData) => void;
   /** Universal return: pop one hop of history (host degrades to start when none, spec §3). */
   onBack: () => void;
@@ -146,6 +148,10 @@ export function Scene({ scene, onActivate, onBack, onReturnToStart, renderPanel 
 
   // Any scene/mode change drops the open label — it belongs to the scene you left.
   useEffect(() => setRevealedId(null), [scene.id, markerMode]);
+
+  // Analytics: one entry = one scene_view (specs/analytics.md). Scene coverage is the headline
+  // metric — the dropoff outward from start_house IS "how far they get".
+  useTrackOnce('scene_view', { scene: scene.id }, scene.id);
 
   // Pan the viewport so a hotspot sits comfortably centered. Shared by focus-driven panning
   // (§5 accessibility floor) and edge-indicator taps. Never activates the hotspot.

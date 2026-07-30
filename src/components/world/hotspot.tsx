@@ -14,8 +14,11 @@ import type { Hotspot as HotspotData } from '../../types/world.types';
 
 export interface HotspotProps {
   hotspot: HotspotData;
-  /** Fired when the hotspot is activated (click / Enter / Space) for non-external targets.
-   *  External targets are plain anchors and navigate themselves — `onActivate` is not called. */
+  /** Fired when the hotspot is activated (click / Enter / Space). External targets are plain
+   *  anchors and navigate THEMSELVES — but they still report here, so the host has a single
+   *  activation choke point covering all four target types (analytics). The host must therefore
+   *  do no navigating of its own for `external`. A reveal-only tap is not an activation and does
+   *  not fire this. */
   onActivate: (hotspot: HotspotData) => void;
   /** Fired when the hotspot receives focus. The Scene uses this to auto-pan an off-viewport
    *  hotspot into view (focus-driven panning, §5). */
@@ -108,7 +111,11 @@ export function Hotspot({
             if (shouldRevealOnly(e)) {
               e.preventDefault();
               onReveal?.(hotspot);
+              return;
             }
+            // Report the activation, then fall through to the anchor's own navigation — no
+            // preventDefault, so the new tab still opens exactly as before.
+            onActivate(hotspot);
           }}
         >
           {inner}

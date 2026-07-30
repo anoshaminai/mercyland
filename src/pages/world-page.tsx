@@ -1,7 +1,8 @@
 // Mercy Land — House World: the world root (`/`). The navigable landing (v2-site.md).
 // Owns scene state, the history stack, and the two universal returns, and delegates each hotspot
 // target: travel (in-world), enter (route out to an experience), overlay (OverlayShell + registry),
-// external (handled inside Hotspot). Persistent scene content renders via ScenePanel. Scenes are
+// external (navigation happens inside Hotspot; it still reports here so handleActivate is the one
+// instrumented choke point). Persistent scene content renders via ScenePanel. Scenes are
 // local state under one route; `enter` targets are the real cross-experience routes.
 
 import { useCallback, useState } from 'react';
@@ -13,6 +14,7 @@ import type { ContentId, Hotspot, ScenePanel as ScenePanelData, SceneId } from '
 import { Scene } from '../components/world/scene';
 import { OverlayShell } from '../components/world/overlay-shell';
 import { ScenePanel } from '../components/world/scene-panel';
+import { track } from '../lib/analytics';
 
 interface OverlayState {
   content: ContentId;
@@ -34,6 +36,19 @@ export function WorldPage() {
 
   const handleActivate = useCallback((h: Hotspot) => {
     const t = h.target;
+
+    // Analytics: THE choke point — every hotspot activation, whatever the target, is one
+    // hotspot_click (specs/analytics.md). Fired before navigation so the event survives an
+    // `external` target taking the tab away. `from` is not decoration: Hotspot.id is only unique
+    // within a scene ('gohome' lives in three), so from+hotspot is the real key.
+    const target =
+      t.type === 'travel'  ? t.sceneId :
+      t.type === 'enter'   ? t.route   :
+      t.type === 'overlay' ? t.content : t.url;
+    track('hotspot_click', {
+      from: current, hotspot: h.id, label: h.label, target_type: t.type, target,
+    });
+
     switch (t.type) {
       case 'travel':
         travel(t.sceneId);
@@ -44,9 +59,12 @@ export function WorldPage() {
       case 'overlay':
         setOverlay({ content: t.content, props: t.props });
         break;
-      // 'external' is a plain <a> inside Hotspot and never reaches here.
+      case 'external':
+        // Nothing to do — Hotspot renders these as a real <a> and the browser has already opened
+        // the new tab. It still calls onActivate so this stays the single instrumented choke point.
+        break;
     }
-  }, [travel, navigate]);
+  }, [travel, navigate, current]);
 
   const handleBack = useCallback(() => {
     setHistory((h) => {
@@ -94,7 +112,11 @@ export function WorldPage() {
         ? (() => {
             const Content = contentRegistry[overlay.content];
             return (
-              <OverlayShell label={overlay.content} onClose={() => setOverlay(null)}>
+              <OverlayShell
+                scene={current}
+                content={overlay.content}
+                onClose={() => setOverlay(null)}
+              >
                 <Content {...(overlay.props ?? {})} />
               </OverlayShell>
             );
