@@ -7,6 +7,7 @@
 import { useRef, useState } from 'react';
 import { validateEmail } from '../../../lib/validate-email';
 import { submitEmailSignup } from '../../../lib/email-signup';
+import { track } from '../../../lib/analytics';
 
 type Status = 'idle' | 'submitting' | 'error';
 
@@ -37,6 +38,7 @@ export function EmailSignup() {
     const outcome = await submitEmailSignup(result.value);
     if (outcome.ok) {
       setSucceeded(true);
+      track('email_submit', { source: 'mailbox' }); // success only, and never the address
     } else {
       setStatus('error');
       setError(outcome.error);
@@ -67,8 +69,7 @@ export function EmailSignup() {
         hear from Mercy Land
       </p>
       <p className="signup__consent">
-        Join the list for new music, shows, and messages from the band. No spam — leave whenever
-        you like.
+        Picture this: you're bored and refreshing your email. A new email pops up - from US - and it contains a beautiful + brief message about new music, new videos, interesting events, melancholy memories. You open and read the email. You smile :)
       </p>
 
       <div className="signup__row">

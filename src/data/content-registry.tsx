@@ -15,6 +15,7 @@ import { FlagStatement } from '../components/world/content/flag-statement';
 import { MonsterDenied } from '../components/world/content/monster-denied';
 import { SummertimeVideo } from '../components/world/content/summertime-video';
 import { SummertimeBTS } from '../components/world/content/summertime-bts';
+import { btsPhotos, type BtsPhoto } from '../lib/bts-assets';
 
 // A content component receives whatever `props` the scene/hotspot passed (see ScenePanel.props
 // and the overlay target's `props`). Keep each component's own state internal.
@@ -37,9 +38,35 @@ export const flagStatement = `***** *** *** M*RCY L*ND, *** ***** ****, ** *** *
 
 ******************************`
 
-// summertime overlays. TODO: fill with the real YouTube id + behind-the-scenes image URLs.
-export const summertimeYouTubeId = ''; // TODO get id
-export const summertimeBTSImages: string[] = []; // TODO add BTS photos
+// summertime overlays.
+// "knock on the door" → this video. https://www.youtube.com/watch?v=4YQhCj5s1Uc
+export const summertimeYouTubeId = '4YQhCj5s1Uc';
+
+// "spy on them" → every photo in src/assets/images/summertime_bts/. To add BTS photos, drop
+// image files in that folder — nothing here needs editing. See src/lib/bts-assets.ts.
+//
+// CAPTIONS (optional, keyed by filename). Write one and it appears under the photo AND becomes
+// the photo's alt text for screen readers. Leave it '' — or leave the photo out entirely — and
+// the photo shows with no caption. An entry whose file no longer exists is simply ignored, so
+// stale keys are harmless. Keep them short; this sits in a small overlay.
+export const btsCaptions: Record<string, string> = {
+  '01.jpeg': 'alt dress 1: i bought this one',
+  '02.jpeg': 'alt dress 2: always flirting w prarie girl',
+  '03.jpeg': 'alt dress 3: this is not my color',
+  '04.JPG': 'sunlight streaming thru the window',
+  '05.jpeg': 'theyre ideating',
+  '06.jpeg': 'my pov of sam + brett.. guys im baking here',
+  '07.jpeg': 'hannah pov of movie magic (before we used a fog machine in her oven)',
+  '08.JPG': 'look at my cake :~)',
+  '09.jpeg': 'me & my husband we are doing better',
+  '10.JPG': 'he can get out of this',
+  '11.jpeg': 'post shoot burgers at maries. this photo makes me emo </3',
+};
+
+export const summertimeBTSPhotos: BtsPhoto[] = btsPhotos.map((photo) => ({
+  ...photo,
+  caption: btsCaptions[photo.name] || undefined,
+}));
 
 // ── Registry ─────────────────────────────────────────────────────────────────
 // All content components are implemented and imported above. Panels: emailSignup (mailbox form),

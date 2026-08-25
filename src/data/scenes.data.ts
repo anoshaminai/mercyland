@@ -8,7 +8,6 @@
 //   • focal.x / mobileZoom per pannable scene — tune on a real phone (mobile panning is LIVE off
 //     `imageWide`; `imageTall` is now an optional upgrade, not a blocker)
 //   • song 01 streaming URL (start_house)
-//   • summertime YouTube id + BTS photos (content-registry.tsx)
 //   • LJ conversation messages (content-registry.tsx, ljMessages)
 //   • display titles: computer_room_void, computer_room_chat_world, flag_void
 //   • flag statement producer names (content-registry.tsx)
@@ -48,7 +47,7 @@ const scenes: Record<SceneId, Scene> = {
       { id: 'neighborhood', label: 'explore the neighborhood', labelShort: 'neighborhood',
         anchor: { x: 0.06, y: 0.55 }, priority: 5, // left edge → edge indicator on mobile
         target: { type: 'travel', sceneId: 'desert_house' } },
-      { id: 'parents', label: "visit parents' friends", labelShort: "parents' friends",
+      { id: 'parents', label: "what's that sound?", labelShort: "what's that?",
         anchor: { x: 0.94, y: 0.55 }, priority: 6, // right edge
         target: { type: 'travel', sceneId: 'summertime_house' } },
       { id: 'flag', label: 'steal the flag', anchor: { x: 0.47, y: 0.42 }, priority: 7,
@@ -73,7 +72,7 @@ const scenes: Record<SceneId, Scene> = {
 
   summertime_house: {
     id: 'summertime_house',
-    title: "Parents' Friend's House",
+    title: "New Neighbor's House",
     layout: 'pannable',
     imageWide: 'blue_house.png',
     focal: { x: 0.5, y: 0.55 },
@@ -83,7 +82,7 @@ const scenes: Record<SceneId, Scene> = {
                                       // read, tap again to go
 
     hotspots: [
-      { id: 'party', label: 'enter the party', anchor: { x: 0.5, y: 0.6 }, priority: 1,
+      { id: 'party', label: 'knock on the door', anchor: { x: 0.5, y: 0.6 }, priority: 1,
         target: { type: 'overlay', content: 'summertimeVideo' } },
       { id: 'spy', label: 'spy', anchor: { x: 0.32, y: 0.45 }, priority: 2,
         target: { type: 'overlay', content: 'summertimeBTS' } },

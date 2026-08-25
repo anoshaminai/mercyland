@@ -11,7 +11,7 @@ export function SummertimeVideo(props: Record<string, unknown>) {
   return (
     <div>
       <h2 style={{ fontFamily: 'var(--font-secondary)', fontSize: '1.5rem', margin: '0 0 14px' }}>
-        the party
+        the door opens and you see:
       </h2>
       <EmbeddedVideo youtubeId={youtubeId} title="Mercy Land — summertime" />
     </div>

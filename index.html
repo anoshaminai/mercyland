@@ -13,6 +13,12 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" />
     <link rel="stylesheet" href="https://use.typekit.net/day4ecd.css" />
     <title>Mercy Land</title>
+    <!-- Analytics (specs/analytics.md): the Umami script tag is injected here at build time by
+         the `umami-script` plugin in vite.config.ts, and ONLY when VITE_UMAMI_SRC + VITE_UMAMI_ID
+         are set (Render dashboard; see .env.example). Unset locally → no tag at all, window.umami
+         stays undefined, and src/lib/analytics.ts degrades to a console log.
+         It is not written inline as a percent-wrapped env placeholder: unsubstituted, that ships
+         to the browser as a literal src and Vite's dev server 500s on decodeURI("/%VI…"). -->
   </head>
   <body>
     <div id="root"></div>

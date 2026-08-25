@@ -25,3 +25,7 @@ dist-ssr
 
 # Claude Code local state (settings + worktree checkouts of this repo)
 .claude/
+
+# Pre-compression photo originals parked by scripts/optimize-photos.sh. Kept out of git
+# so the full-size camera files don't land in history if you forget to delete them.
+*.originals/
