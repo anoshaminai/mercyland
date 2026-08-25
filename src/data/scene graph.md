@@ -53,7 +53,7 @@ all scene photos are in src/assets/images/scenes/
 | 3 | check mail | front door | `travel` | `mailbox` | 2 |
 | 4 | use computer room | right front window | `travel` | `computer_room_void` | 1 | |
 | 5 | song 01 | upstairs left window | `external` | link TBD | 4 | |
-| 6 | visit parents's friends | right side street | `travel` | `summertime_house` | 6 | right edge of screen|
+| 6 | what's that sound? | right side street | `travel` | `summertime_house` | 6 | right edge of screen|
 | 7 | steal the flag | flag | `travel` | `flag_void` | 7 | 
 
 - **Scene panel (persistent content), if any:** none
@@ -86,7 +86,7 @@ all scene photos are in src/assets/images/scenes/
 ### Scene: `summertime_house`
 
 - **Scene id:** `summertime_house`
-- **Display title:** Parents' Friend's House
+- **Display title:** New Neighbor's House
 - **Is this the start scene?** no
 - **Photograph:** blue_house.png
 - **What's in frame:** front door, left front window, second left front window, right window, second right window, stairs, left side street
@@ -97,8 +97,8 @@ all scene photos are in src/assets/images/scenes/
 | # | Label | Anchored to (feature) | Target type | Target | Priority | Notes |
 |---|---|---|---|---|---|---|
 | 1 | go home | left side street | `travel` | `house_monster` | | |
-| 2 | join the party | front door | `overlay` | TODO: link to summertime YT video | | |
-| 3 | spy on the party | left front window | `overlay` | TODO - link to BTS photos | | |
+| 2 | knock on the door | front door | `overlay` | TODO: link to summertime YT video | | |
+| 3 | spy on them | left front window | `overlay` | TODO - link to BTS photos | | |
 
 - **Scene panel, if any:** 
 - **Max visible labels:** 4
